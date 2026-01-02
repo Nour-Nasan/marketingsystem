@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="product-management-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <h2 class="page-title">Product Management</h2>
+    <a href="{% url 'products:add_product' %}" class="btn btn-primary btn-add-product">
+      <span class="btn-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </span>
+      Add New Product
+    </a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    {% if products %}
+    <div class="product-table-card">
+      <div class="table-responsive">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Category</th>
+              <th>Image</th>
+              <th>Description</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in products %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td class="product-name-cell">{{ product.productName }}</td>
+              <td class="product-price-cell">{{ product.productPrice }} SYP</td>
+              <td>{{ product.category.name }}</td>
+              <td>
+                {% if product.productImage %}
+                <img
+                  src="{{ product.productImage.url }}"
+                  alt="Product Image"
+                  class="product-image"
+                />
+                {% else %}
+                <span class="text-muted">N/A</span>
+                {% endif %}
+              </td>
+              <td class="product-description-cell">{{ product.productDescription|truncatechars:50 }}</td>
+              <td class="action-buttons-cell">
+                <a
+                  href="{% url 'products:product_detail' product.id %}"
+                  class="btn-action btn-view"
+                  title="View"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </a>
+
+                <a
+                  href="{% url 'products:edit_product' product.id %}"
+                  class="btn-action btn-edit"
+                  title="Edit"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="{% url 'products:delete_product' product.id %}"
+                  class="btn-action btn-delete"
+                  title="Delete"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          <path d="M12 4v13M8 8h12"></path>
+        </svg>
+      </div>
+      <h3 class="empty-title">No Products Available</h3>
+      <p class="empty-description">Start by adding your first product to the list.</p>
+      <a href="{% url 'products:add_product' %}" class="btn btn-primary btn-large">
+        <span class="btn-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </span>
+        Add New Product
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Styles -->
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Instagram-inspired color palette */
+  :root {
+    --instagram-gradient: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+    --primary-color: #d62976; /* Pink/Red from gradient */
+    --primary-dark: #962fbf; /* Purple from gradient */
+    --danger-color: #ef4444;
+    --danger-dark: #dc2626;
+    --success-color: #10b981;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --bg-light: #f9fafb;
+    --bg-lighter: #f3f4f6;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-lighter);
+    color: var(--text-primary);
+    direction: ltr;
+  }
+
+  .product-management-container {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Header Section */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--instagram-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .btn-primary {
+    background: var(--instagram-gradient);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -5px rgba(214, 41, 118, 0.3);
+  }
+
+  .btn-large {
+    padding: 14px 32px;
+    font-size: 1.1rem;
+  }
+
+  /* Table Card */
+  .product-table-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  /* Table Styling */
+  .product-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .product-table th,
+  .product-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .product-table thead th {
+    background-color: var(--bg-light);
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
+
+  .product-table tbody tr:hover {
+    background-color: var(--bg-light);
+  }
+
+  .product-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Specific Cell Styling */
+  .product-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  .product-name-cell {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .product-price-cell {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .product-description-cell {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  /* Action Buttons in Table */
+  .action-buttons-cell {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin: 0 4px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .btn-action svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .btn-view {
+    background-color: #e0f2fe; /* Light Blue */
+    color: #0284c7; /* Darker Blue */
+  }
+
+  .btn-view:hover {
+    background-color: #0284c7;
+    color: white;
+  }
+
+  .btn-edit {
+    background-color: #fef3c7; /* Light Yellow */
+    color: #d97706; /* Darker Yellow */
+  }
+
+  .btn-edit:hover {
+    background-color: #d97706;
+    color: white;
+  }
+
+  .btn-delete {
+    background-color: #fee2e2; /* Light Red */
+    color: var(--danger-dark);
+  }
+
+  .btn-delete:hover {
+    background-color: var(--danger-dark);
+    color: white;
+  }
+
+  /* Empty State */
+  .empty-state {
+    background: white;
+    border-radius: 16px;
+    padding: 60px 30px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    background: rgba(214, 41, 118, 0.1); /* Light pink background */
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    color: var(--primary-color);
+  }
+
+  .empty-icon svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .empty-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+    }
+
+    .product-management-container {
+      padding: 20px 10px;
+    }
+
+    /* Table adjustments for small screens */
+    .product-table, .product-table tbody, .product-table tr, .product-table td {
+      display: block;
+    }
+
+    .product-table thead {
+      display: none; /* Hide table header on small screens */
+    }
+
+    .product-table tr {
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .product-table td {
+      border-bottom: 1px solid var(--border-color);
+      text-align: right;
+      padding: 10px 15px;
+      position: relative;
+    }
+
+    .product-table td:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 15px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    /* Manually setting labels for better mobile view */
+    .product-table td:nth-child(1):before { content: "ID"; }
+    .product-table td:nth-child(2):before { content: "Name"; }
+    .product-table td:nth-child(3):before { content: "Price"; }
+    .product-table td:nth-child(4):before { content: "Category"; }
+    .product-table td:nth-child(5):before { content: "Image"; }
+    .product-table td:nth-child(6):before { content: "Description"; }
+    .product-table td:nth-child(7):before { content: "Actions"; }
+
+    .product-table td:last-child {
+      border-bottom: none;
+      text-align: center;
+    }
+
+    .product-image {
+      float: right;
+    }
+  }
+</style>
+{% endblock %}

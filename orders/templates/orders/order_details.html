@@ -1,0 +1,137 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5">
+  <div class="card shadow-sm p-4 rounded-4 card-style">
+    <h2 class="mb-4 text-center text-gradient">
+      Order Details #{{ order.id }}
+    </h2>
+
+    <!-- Order Summary -->
+    <div class="order-summary-grid mb-4">
+      <div class="summary-item">
+        <p class="text-muted mb-0">Buyer</p>
+        <p class="fw-bold">{{ order.buyer.username }}</p>
+      </div>
+      <div class="summary-item">
+        <p class="text-muted mb-0">Status</p>
+        <p class="fw-bold">
+          <span class="status-badge status-{{ order.status }}">
+            {{ order.get_status_display }}
+          </span>
+        </p>
+      </div>
+      <div class="summary-item">
+        <p class="text-muted mb-0">Basket ID</p>
+        <p class="fw-bold">#{{ order.basket.id }}</p>
+      </div>
+      <div class="summary-item">
+        <p class="text-muted mb-0">Contact</p>
+        <p class="fw-bold">{{ order.contact_method }}</p>
+      </div>
+    </div>
+
+    <!-- Products List -->
+    <h5 class="fw-bold mb-3">Products</h5>
+    <ul class="list-group mb-4">
+      {% for item in order.items.all %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ item.product.productName }}
+        <span class="badge rounded-pill quantity-badge">
+          Qty: {{ item.quantity }}
+        </span>
+      </li>
+      {% empty %}
+      <li class="list-group-item text-muted">No products in this order.</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Tracking Section -->
+    {% if order.status == 'approved' %}
+      <hr class="my-4">
+      <h5 class="fw-bold mb-3">Order Tracking</h5>
+      {% if order.tracking_steps.exists %}
+        <ul class="tracking-list list-group mb-3">
+          {% for step in order.tracking_steps.all %}
+            <li class="tracking-item list-group-item d-flex justify-content-between">
+              <span>{{ step.get_status_display }}</span>
+              <small class="text-muted">{{ step.updated_at|date:"Y-m-d H:i" }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">Tracking has not started yet.</p>
+      {% endif %}
+
+      {% if user.role == 'seller' %}
+        <form method="post" action="{% url 'orders:update_order_tracking' order.id %}" class="text-center">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-update-status">
+            Update Order Status
+          </button>
+        </form>
+      {% endif %}
+    {% endif %}
+
+    <!-- Action Buttons for Pending Orders -->
+    {% if order.status == 'pending' %}
+      <div class="text-center d-flex justify-content-center gap-3 mt-3">
+        <form method="post" action="{% url 'orders:approve_order' order.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-approve">
+            Approve Order
+          </button>
+        </form>
+        <form method="post" action="{% url 'orders:reject_order' order.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-reject">
+            Reject Order
+          </button>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Styling -->
+<style>
+  :root {
+    --ig-blue: #515bd4;
+    --ig-purple: #8134af;
+    --ig-pink: #dd2a7b;
+    --ig-orange: #f58529;
+    --ig-yellow: #feda77;
+    --ig-gradient: linear-gradient(45deg, var(--ig-purple), var(--ig-pink), var(--ig-orange));
+  }
+
+  .card-style { background-color: #fff; border: 1px solid #eee; }
+  .text-gradient { background: var(--ig-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;color: transparent; }
+
+  /* Order Summary Grid */
+  .order-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .summary-item p { margin-bottom: 0.25rem; }
+
+  /* Quantity Badge */
+  .quantity-badge { background: var(--ig-gradient); color: white; font-size: 0.85rem; padding: 0.4em 0.8em; }
+
+  /* Action Buttons */
+  .btn-approve, .btn-reject, .btn-update-status { border: none; font-weight: 600; border-radius: 0.5rem; padding: 0.6rem 1.5rem; transition: all 0.3s ease; }
+  .btn-approve { background: var(--ig-gradient); color: white; }
+  .btn-approve:hover { opacity: 0.9; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
+  .btn-reject { background-color: #ffe6e6; color: #cc0000; }
+  .btn-reject:hover { background-color: #cc0000; color: white; }
+  .btn-update-status { background-color: var(--ig-orange); color: white; }
+  .btn-update-status:hover { background-color: #feda77; color: #333; }
+
+  /* Tracking List */
+  .tracking-list .tracking-item { border-right: none; border-left: 3px solid #eee; border-radius: 0; }
+  .tracking-list .tracking-item:first-child { border-top-left-radius: .25rem; }
+  .tracking-list .tracking-item:last-child { border-bottom-left-radius: .25rem; }
+  .tracking-list .tracking-item:last-of-type { border-left: 3px solid var(--ig-purple); }
+
+  /* Status Badges (Include from previous responses) */
+  .status-badge { display: inline-block; padding: 0.3em 0.8em; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; text-transform: capitalize; }
+  .status-approved { background-color: #e6ffed; color: #00a854; }
+  .status-pending { background-color: #fffbe6; color: #ffc107; }
+  .status-shipped { background-color: #e0f7fa; color: #00bcd4; }
+  .status-cancelled { background-color: #ffe6e6; color: #cc0000; }
+</style>
+{% endblock %}

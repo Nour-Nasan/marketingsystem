@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5" style="max-width: 700px">
+  <div class="card shadow-sm border-0 rounded-4 p-4">
+    <h3 class="mb-4 text-gradient text-center fw-bold">Create New Shop</h3>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="id_owner" class="form-label">Select Shop Owner</label>
+        {{ form.owner }}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_shopName" class="form-label">Shop Name</label>
+        {{ form.shopName }}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_shopDescription" class="form-label"
+          >Store Description</label
+        >
+        {{ form.shopDescription }}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_shopAddress" class="form-label">Shop Address</label>
+        {{ form.shopAddress }}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_shopNumber" class="form-label">Phone Number</label>
+        {{ form.shopNumber }}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_shopEmail" class="form-label">Email Address</label>
+        {{ form.shopEmail }}
+      </div>
+
+      <div class="d-flex justify-content-between flex-wrap gap-2 mt-4">
+        <button type="submit" class="btn btn-gradient">
+          <i class="bi bi-plus-circle"></i> Save Shop
+        </button>
+        <a
+          href="{% url 'users:admin_dashboard' %}"
+          class="btn btn-outline-dark"
+        >
+          Back
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .text-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .btn-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    border: none;
+    color: white;
+    font-weight: 500;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    transition: 0.3s ease-in-out;
+  }
+
+  .btn-gradient:hover {
+    opacity: 0.9;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5" style="max-width: 650px">
+  <div class="alert shadow-sm p-4 border-0" style="background-color: #fff0f0">
+    <h4 class="mb-3 text-danger fw-bold">⚠️ Confirm Shop Deletion</h4>
+    <p class="mb-0">
+      Are you sure you want to delete the shop
+      <strong>"{{ shop.shopName }}"</strong>?
+      <br />
+      <span class="text-muted">This action cannot be undone.</span>
+    </p>
+
+    <form method="post" class="d-flex gap-2 mt-4 flex-wrap">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-gradient-danger">Yes, Delete</button>
+      <a href="{% url 'users:admin_dashboard' %}" class="btn btn-outline-dark">
+        Cancel
+      </a>
+    </form>
+  </div>
+</div>
+
+<style>
+  .btn-gradient-danger {
+    background: linear-gradient(to right, #d4145a, #fbb03b);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.4rem;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-gradient-danger:hover {
+    opacity: 0.9;
+  }
+</style>
+{% endblock %}

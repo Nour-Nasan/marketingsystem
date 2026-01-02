@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5" style="max-width: 700px">
+  <h2 class="mb-4 fw-bold text-gradient">Create a New Shop</h2>
+
+  <form method="post" class="bg-white p-4 rounded-4 shadow-sm border-0">
+    {% csrf_token %} {{ form.as_p }}
+
+    <button type="submit" class="btn btn-gradient mt-3">Save</button>
+  </form>
+</div>
+
+<!-- Gradient button styling -->
+<style>
+  .btn-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 30px;
+    padding: 8px 25px;
+  }
+
+  .btn-gradient:hover {
+    background: linear-gradient(to right, #833ab4, #e1306c);
+    color: white;
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  form label {
+    font-weight: bold;
+    color: #444;
+  }
+
+  form input,
+  form textarea,
+  form select {
+    border-radius: 10px;
+  }
+</style>
+{% endblock %}

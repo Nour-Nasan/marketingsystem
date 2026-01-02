@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5" style="max-width: 700px">
+  <h2 class="fw-bold mb-3 text-gradient">Confirm Your Order</h2>
+  <p>Are you sure you want to place an order for the current basket?</p>
+
+  <div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">Basket Contents:</h5>
+      <ul class="list-group list-group-flush">
+        {% for item in basket.items.all %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{ item.product.productName }}</span>
+          <span class="text-muted">Quantity: {{ item.quantity }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-muted">Your basket is empty.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <form method="post" class="d-flex gap-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-gradient">
+      <i class="bi bi-check-circle"></i> Confirm Order
+    </button>
+    <a href="{% url 'baskets:view_basket' %}" class="btn btn-outline-secondary">
+      Back to Basket
+    </a>
+  </form>
+</div>
+
+<!-- Styling -->
+<style>
+  .btn-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 25px;
+  }
+
+  .btn-gradient:hover {
+    background: linear-gradient(to right, #833ab4, #e1306c);
+    color: white;
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .card h5 {
+    color: #444;
+  }
+
+  .list-group-item {
+    font-size: 0.95rem;
+  }
+</style>
+{% endblock %}

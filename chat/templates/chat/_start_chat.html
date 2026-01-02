@@ -1,0 +1,274 @@
+{% load static %}
+
+<style>
+  :root {
+    --color-purple: #8134AF;
+    --color-pink: #DD2A7B;
+    --color-orange: #F58529;
+    --color-bg-light: #FAFAFA;
+    --color-bg-white: #FFFFFF;
+    --color-border-light: #E5E5E5;
+    --color-text-primary: #262626;
+    --color-text-secondary: #65676B;
+    --color-text-muted: #A0A0A0;
+    --gradient-instagram: linear-gradient(135deg, #8134AF 0%, #DD2A7B 50%, #F58529 100%);
+  }
+
+  .search-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: var(--color-bg-light);
+    color: var(--color-text-primary);
+    transition: all 150ms ease-in-out;
+  }
+
+  .search-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-purple);
+    background-color: var(--color-bg-white);
+    box-shadow: 0 0 0 3px rgba(129, 52, 175, 0.1);
+  }
+
+  .btn-search {
+    padding: 10px 16px;
+    background: var(--gradient-instagram);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+  }
+
+  .btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-search:active {
+    transform: translateY(0);
+  }
+
+  .btn-clear {
+    padding: 10px 16px;
+    background-color: var(--color-bg-light);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border-light);
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .btn-clear:hover {
+    background-color: var(--color-bg-white);
+    border-color: var(--color-text-muted);
+    color: var(--color-text-primary);
+  }
+
+  .shop-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px;
+    background-color: var(--color-bg-white);
+    border: 1px solid var(--color-border-light);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 250ms ease-in-out;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 10px;
+  }
+
+  .shop-card:hover {
+    border-color: var(--color-purple);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .shop-card:active {
+    transform: translateY(0);
+  }
+
+  .shop-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .shop-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: var(--gradient-instagram);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .shop-details {
+    flex: 1;
+  }
+
+  .shop-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .shop-cta {
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+
+  .shop-arrow {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    font-size: 18px;
+    transition: all 150ms ease-in-out;
+  }
+
+  .shop-card:hover .shop-arrow {
+    color: var(--color-purple);
+    transform: translateX(4px);
+  }
+
+  .no-shops-message {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 24px;
+  }
+
+  .no-shops-message i {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 12px;
+    opacity: 0.3;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .shop-card {
+    animation: slideIn 250ms ease-out;
+  }
+
+  @media (max-width: 768px) {
+    .search-container {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-search,
+    .btn-clear {
+      width: 100%;
+    }
+
+    .shop-card {
+      padding: 12px;
+    }
+
+    .shop-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+  }
+</style>
+
+<h5 class="mb-3 fw-bold">
+  <i class="bi bi-shop me-2"></i>Start a Conversation
+</h5>
+
+<form method="get" class="search-container">
+  <input
+    type="text"
+    name="q"
+    value="{{ q }}"
+    class="search-input"
+    placeholder="Search shops by name..."
+  >
+  <button type="submit" class="btn-search">
+    <i class="bi bi-search me-1"></i>Search
+  </button>
+  {% if q %}
+    <a href="{% url 'chat:inbox' %}" class="btn-clear">
+      <i class="bi bi-x"></i>Clear
+    </a>
+  {% endif %}
+</form>
+
+<div class="list-group">
+  {% for shop in shops %}
+    <a href="{% url 'chat:start_conversation' shop.id %}"
+       class="shop-card"
+       title="Start conversation with {{ shop.shopName }}">
+      
+      <div class="shop-info">
+        <div class="shop-icon">
+          <i class="bi bi-shop"></i>
+        </div>
+
+        <div class="shop-details">
+          <div class="shop-name">{{ shop.shopName }}</div>
+          <div class="shop-cta">Tap to start chatting</div>
+        </div>
+      </div>
+
+      <i class="bi bi-chevron-right shop-arrow"></i>
+    </a>
+  {% empty %}
+    <div class="no-shops-message">
+      {% if q %}
+        <i class="bi bi-search"></i>
+        <p><strong>No shops found</strong></p>
+        <p style="font-size: 12px; margin-top: 8px;">
+          Try searching with different keywords
+        </p>
+      {% else %}
+        <i class="bi bi-inbox"></i>
+        <p><strong>No shops available</strong></p>
+        <p style="font-size: 12px; margin-top: 8px;">
+          Check back later or explore our marketplace
+        </p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>

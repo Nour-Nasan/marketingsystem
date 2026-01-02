@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}Browse Stores{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="mb-5 text-center">
+    <h1 class="fw-bolder text-gradient display-4">Browse All Stores</h1>
+    <p class="text-muted lead">
+      Discover unique shops and explore their products.
+    </p>
+  </div>
+
+  <div class="row">
+    {% for shop in shops %}
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100 shadow-lg rounded-4 store-card">
+        <div class="card-body d-flex flex-column">
+          <h4 class="card-title fw-bold mb-3 store-title">
+            <i class="bi bi-shop me-2 store-icon"></i> {{ shop.shopName }}
+          </h4>
+
+          <p class="card-text text-muted flex-grow-1 store-description">
+            {{ shop.shopDescription|truncatechars:100 }}
+          </p>
+
+          <ul class="list-unstyled small mb-4 store-info">
+            <li class="mb-2">
+              <i class="bi bi-geo-alt me-2 info-icon"></i>
+              {{ shop.shopAddress }}
+            </li>
+            <li>
+              <i class="bi bi-telephone me-2 info-icon"></i>
+              {{ shop.shopNumber }}
+            </li>
+          </ul>
+
+          <a href="{% url 'shops:shop_detail' shop.id %}"
+             class="btn btn-visit-store w-100">
+            Visit Store
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="alert custom-alert text-center">
+        <p class="mb-0 fw-bold">No stores available at the moment.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Styling -->
+<style>
+  /* Instagram Gradient Colors */
+  :root {
+    --ig-blue: #515bd4;
+    --ig-purple: #8134af;
+    --ig-pink: #dd2a7b;
+    --ig-orange: #f58529;
+    --ig-yellow: #feda77;
+    --ig-gradient: linear-gradient(45deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-orange), var(--ig-yellow));
+    --ig-gradient-short: linear-gradient(to right, var(--ig-purple), var(--ig-pink));
+  }
+
+  /* Universal Styling */
+  .text-gradient {
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Store Card */
+  .store-card {
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .store-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .store-title {
+    color: var(--ig-purple);
+  }
+
+  .store-icon {
+    color: var(--ig-pink);
+  }
+
+  .store-description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .store-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+
+  .info-icon {
+    color: var(--ig-orange);
+  }
+
+  /* Visit Store Button */
+  .btn-visit-store {
+    background: var(--ig-gradient-short);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-visit-store:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+  }
+
+  /* Custom Alert for No Stores (reused from previous templates) */
+  .custom-alert {
+    background-color: #fcf0fc; /* Very light purple/pink */
+    border: 1px solid #e0b0e0; /* Light purple border */
+    color: var(--ig-purple);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5 text-center">
+  <h2 class="text-danger">403 - غير مصرح</h2>
+  <p>عذرًا، لا تملك صلاحية الوصول إلى هذه الصفحة.</p>
+  <a href="{% url 'users:redirect_after_login' %}" class="btn btn-primary mt-3"
+    >العودة للوحة التحكم</a
+  >
+</div>
+{% endblock %}

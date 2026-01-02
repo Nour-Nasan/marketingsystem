@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+
+  <!-- ================= Page Header ================= -->
+  <div class="d-flex justify-content-center align-items-center mb-4">
+   <h1 class="fw-bold"
+    style="
+      background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    ">
+  Flash Offers
+</h1>
+
+  </div>
+
+  <!-- ================================================= -->
+
+
+  {% if offers %}
+    <div class="row g-4">
+
+      {% for offer in offers %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+
+          <a href="{% url 'products:product_detail' offer.product.id %}"
+             class="text-decoration-none">
+
+            <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+
+              <!-- Product Image -->
+              <div class="ratio ratio-4x3 bg-light rounded-top overflow-hidden">
+                <img
+                  src="{{ offer.product.productImage.url }}"
+                  alt="{{ offer.product.productName }}"
+                  class="w-100 h-100 object-fit-cover"
+                >
+              </div>
+
+              <!-- Card Body -->
+              <div class="card-body text-center">
+
+                <!-- Product Name -->
+                <h6 class="fw-bold mb-2"
+    style="
+      background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    ">
+  {{ offer.product.productName }}
+</h6>
+
+
+                <!-- Prices -->
+                <p class="mb-1">
+                  <span class="text-muted text-decoration-line-through">
+                    {{ offer.old_price }}
+                  </span>
+                  <span class="fw-bold text-success ms-2">
+                    {{ offer.new_price }}
+                  </span>
+                </p>
+
+                <!-- Dates -->
+                <small class="text-muted d-block">
+                  Valid until
+                  {{ offer.end_date|date:"d M Y" }}
+                </small>
+
+              </div>
+
+            </div>
+
+          </a>
+
+        </div>
+      {% endfor %}
+
+    </div>
+  {% else %}
+    <!-- ================= Empty State ================= -->
+    <div class="text-center py-5">
+      <i class="bi bi-lightning text-muted display-4"></i>
+      <p class="text-muted mt-3 fs-5">
+        No flash offers available at the moment.
+      </p>
+    </div>
+    <!-- ================================================= -->
+  {% endif %}
+
+</div>
+
+{% endblock %}

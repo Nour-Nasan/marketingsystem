@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="card shadow-lg p-5 rounded-4 tracking-card">
+
+    <h2 class="text-center text-gradient mb-4">
+      Order Tracking #{{ order.id }}
+    </h2>
+
+    {% if tracking_steps %}
+
+    {% with last_step=tracking_steps.last.status %}
+    <!-- Progress Bar -->
+    <div class="progress tracking-progress mb-5">
+      <div
+        class="progress-bar progress-bar-striped progress-bar-animated bg-gradient"
+        role="progressbar"
+        style="
+          width:
+          {% if last_step == 'preparing' %}25%
+          {% elif last_step == 'prepared' %}50%
+          {% elif last_step == 'shipping' %}75%
+          {% elif last_step == 'delivered' %}100%
+          {% endif %}
+        "
+      ></div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="tracking-timeline">
+
+      <!-- Preparing -->
+      <div class="step {% if last_step in 'preparing prepared shipping delivered' %}done{% endif %}">
+        <div class="circle">📦</div>
+        <p>Preparing</p>
+      </div>
+
+      <!-- Prepared -->
+      <div class="step {% if last_step in 'prepared shipping delivered' %}done{% endif %}">
+        <div class="circle">✔</div>
+        <p>Prepared</p>
+      </div>
+
+      <!-- Shipping -->
+      <div class="step {% if last_step in 'shipping delivered' %}done{% endif %}">
+        <div class="circle">🚚</div>
+        <p>Shipping</p>
+      </div>
+
+      <!-- Delivered -->
+      <div class="step {% if last_step == 'delivered' %}done{% endif %}">
+        <div class="circle">🏁</div>
+        <p>Delivered</p>
+      </div>
+
+    </div>
+    {% endwith %}
+
+    {% else %}
+      <p class="text-muted text-center">
+        Tracking has not started yet.
+      </p>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- Styling -->
+<style>
+.text-gradient {
+  background: linear-gradient(to right, #f58529, #dd2a7b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tracking-card {
+  border: none;
+}
+
+/* Progress */
+.tracking-progress {
+  height: 12px;
+  border-radius: 10px;
+}
+
+.bg-gradient {
+  background: linear-gradient(to right, #f58529, #dd2a7b);
+}
+
+/* Timeline */
+.tracking-timeline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.tracking-timeline::before {
+  content: "";
+  position: absolute;
+  top: 25px;
+  left: 5%;
+  width: 90%;
+  height: 4px;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+/* Step */
+.step {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  width: 25%;
+}
+
+.step .circle {
+  width: 50px;
+  height: 50px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #555;
+  transition: 0.3s;
+}
+
+.step p {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Completed */
+.step.done .circle {
+  background: linear-gradient(to right, #f58529, #dd2a7b);
+  color: white;
+}
+
+.step.done p {
+  color: #dd2a7b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tracking-timeline {
+    flex-direction: column;
+  }
+
+  .tracking-timeline::before {
+    display: none;
+  }
+
+  .step {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+</style>
+
+{% endblock %}

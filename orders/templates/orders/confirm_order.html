@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-page-container">
+  <div class="form-card">
+    <!-- Card Header with Instagram Gradient -->
+    <div class="form-card-header">
+      <h2 class="form-title">Confirm Your Order</h2>
+      <p class="form-subtitle">Please review your order and confirm the details.</p>
+    </div>
+
+    <!-- Form Body -->
+    <div class="form-card-body">
+      <form method="post" class="order-form">
+        {% csrf_token %}
+
+        <!-- Basket Contents Section -->
+        <div class="basket-summary-card">
+          <h5 class="summary-title">Basket Contents:</h5>
+          <ul class="basket-list">
+            {% for item in basket.items.all %}
+            <li class="basket-item">
+              <span>{{ item.product.productName }}</span>
+              <span class="item-quantity">Qty: {{ item.quantity }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="form-group">
+          <label class="form-label">Preferred Contact Method:</label>
+          <div class="radio-group">
+            {{ form.contact_method }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Delivery Method:</label>
+          <div class="radio-group">
+            {{ form.delivery_method }}
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <span class="btn-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </span>
+            Confirm Order
+          </button>
+          <a href="{% url 'baskets:view_basket' %}" class="btn btn-secondary">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Styles -->
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Instagram-inspired color palette */
+  :root {
+    --instagram-gradient: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+    --primary-color: #d62976; /* Pink/Red from gradient */
+    --primary-dark: #962fbf; /* Purple from gradient */
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --bg-lighter: #f3f4f6;
+    --border-color: #e5e7eb;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-lighter);
+    color: var(--text-primary);
+    direction: ltr;
+  }
+
+  .form-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .form-card {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  /* Card Header with Gradient */
+  .form-card-header {
+    background: var(--instagram-gradient);
+    color: white;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .form-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+
+  .form-card-body {
+    padding: 30px;
+  }
+
+  /* Basket Summary Card */
+  .basket-summary-card {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    background-color: var(--bg-lighter);
+  }
+
+  .summary-title {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+  }
+
+  .basket-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .basket-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    border-bottom: 1px dashed #ccc;
+  }
+
+  .basket-item:last-child {
+    border-bottom: none;
+  }
+
+  .item-quantity {
+    color: var(--text-secondary);
+  }
+
+  /* Form Styling */
+  .form-group {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .form-group:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+
+  .radio-group {
+    /* Style for the container of radio buttons rendered by Django form */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Action Buttons */
+  .form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .btn-primary {
+    background: var(--instagram-gradient);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -5px rgba(214, 41, 118, 0.3);
+  }
+
+  .btn-secondary {
+    background-color: var(--bg-lighter);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--border-color);
+    color: var(--text-primary);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 600px) {
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+    }
+
+    .form-card-header {
+      padding: 20px;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+    }
+
+    .form-card-body {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}

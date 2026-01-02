@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-sm p-4 rounded-4 card-style mx-auto" style="max-width: 500px;">
+    <h3 class="mb-4 text-center text-gradient fw-bold">Update Order Tracking</h3>
+
+    <div class="mb-4 p-3 rounded-3 status-box">
+      {% if current_status %}
+        <p class="mb-2">
+          <strong class="text-muted">Current Status:</strong>
+          <span class="status-badge status-{{ current_status|lower|slugify }}">
+            {{ current_status }}
+          </span>
+        </p>
+      {% endif %}
+
+      <p class="mb-0">
+        <strong class="text-muted">Next Status:</strong>
+        <span class="status-badge status-{{ next_status|lower|slugify }}">
+          {{ next_status }}
+        </span>
+      </p>
+    </div>
+
+    <form method="post" class="d-flex justify-content-center gap-3">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-confirm">
+        Confirm Update
+      </button>
+      <a href="{% url 'orders:order_details' order.id %}" class="btn btn-cancel">
+        Cancel
+      </a>
+    </form>
+  </div>
+</div>
+
+<!-- Styling -->
+<style>
+  :root {
+    --ig-blue: #515bd4;
+    --ig-purple: #8134af;
+    --ig-pink: #dd2a7b;
+    --ig-orange: #f58529;
+    --ig-yellow: #feda77;
+    --ig-gradient: linear-gradient(45deg, var(--ig-purple), var(--ig-pink), var(--ig-orange));
+  }
+
+  .card-style { background-color: #fff; border: 1px solid #eee; }
+  .text-gradient {
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+
+  .status-box {
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+  }
+
+  /* Status Badges (Base style and colors from previous response) */
+  .status-badge {
+    display: inline-block;
+    padding: 0.3em 0.8em;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  /* Assuming Django status values are slugified (e.g., 'approved', 'pending', 'shipped', 'cancelled') */
+  .status-approved { background-color: #e6ffed; color: #00a854; }
+  .status-pending { background-color: #fffbe6; color: #ffc107; }
+  .status-shipped { background-color: #e0f7fa; color: #00bcd4; }
+  .status-cancelled { background-color: #ffe6e6; color: #cc0000; }
+
+  /* Action Buttons */
+  .btn-confirm {
+    background: var(--ig-purple);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-confirm:hover {
+    background: var(--ig-pink);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .btn-cancel {
+    background-color: #f0f0f0;
+    color: #6c757d;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-cancel:hover {
+    background-color: #e0e0e0;
+    color: #495057;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5" style="max-width: 600px">
+  <div class="card shadow-sm p-4 border-0 rounded-4">
+    <h2 class="mb-3 text-danger fw-bold text-center">
+      Reject Order #{{ order.id }}
+    </h2>
+    <p class="text-center">
+      Are you sure you want to <strong>reject</strong> this order?
+    </p>
+
+    <form
+      method="post"
+      class="d-flex justify-content-center gap-3 mt-4 flex-wrap"
+    >
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, Reject Order</button>
+      <a
+        href="{% url 'orders:view_orders' %}"
+        class="btn btn-outline-secondary"
+      >
+        Cancel
+      </a>
+    </form>
+  </div>
+</div>
+{% endblock %}

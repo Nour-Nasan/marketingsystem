@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5 mb-5">
+
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden text-center">
+
+        <!-- Header -->
+        <div class="py-4 px-4 border-bottom"
+             style="background-color:#fafafa;">
+          <h4 class="fw-bold mb-1"
+              style="
+                background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                -webkit-text-fill-color: transparent;
+              ">
+            Confirm Delete Flash Offer
+          </h4>
+          <p class="text-muted mb-0">
+            This action cannot be undone
+          </p>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body px-4 py-4">
+
+          <p class="text-muted mb-3">
+            Are you sure you want to delete the flash offer for
+            <span class="fw-semibold text-dark">
+              {{ offer.product.productName }}
+            </span>?
+          </p>
+
+          <!-- Prices -->
+          <div class="mb-4">
+            <span class="text-muted text-decoration-line-through me-2">
+              {{ offer.old_price }}
+            </span>
+            <span class="fw-bold fs-5"
+                  style="color:#dd2a7b;">
+              {{ offer.new_price }}
+            </span>
+          </div>
+
+          <!-- Actions -->
+          <form method="post" class="d-flex justify-content-center gap-3">
+            {% csrf_token %}
+
+            <!-- Delete Button -->
+            <button type="submit"
+                    class="btn btn-sm d-flex align-items-center gap-1 px-4"
+                    style="
+                      background-color:#fecaca;
+                      color:#7f1d1d;
+                      border:none;
+                      font-weight:500;
+                    ">
+              <i class="bi bi-trash3-fill"></i>
+              Delete Offer
+            </button>
+
+            <!-- Cancel Button -->
+            <a href="{% url 'offers:my_offers' %}"
+               class="btn btn-sm px-4"
+               style="
+                 background-color:#e5e7eb;
+                 color:#374151;
+                 border:none;
+               ">
+              Cancel
+            </a>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

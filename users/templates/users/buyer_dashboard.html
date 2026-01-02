@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Swiper.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <style>
+        /* Global Spacing Adjustments */
+        .top-bar {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1rem; /* Reduced padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem; /* Reduced margin-bottom from 1.5rem (mb-6) to 1rem (mb-4) */
+        }
+
+        .top-bar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+
+
+        .gradient-text {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+        }
+
+        .gradient-border {
+            position: relative;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            background: white;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            border-radius: 0.5rem;
+            z-index: -1;
+        }
+
+        .nav-item-active {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white !important;
+        }
+
+        .nav-item-active i {
+            color: white;
+        }
+
+        .quick-action-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-stores {
+            color: #f58529;
+        }
+
+        .icon-products {
+            color: #ec4899;
+        }
+
+        .icon-favorites {
+            color: #a855f7;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(245, 133, 41, 0.3);
+            color: white;
+        }
+
+        .sidebar-card {
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+.sidebar-header {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 1rem;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .sidebar-nav li:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            color: #374151;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: #f9fafb;
+            color: #f58529;
+            padding-left: 1.25rem;
+        }
+
+        .sidebar-nav a i {
+            font-size: 1.125rem;
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(245, 133, 41, 0.05) 0%, rgba(236, 72, 153, 0.05) 50%, rgba(168, 85, 247, 0.05) 100%);
+            border-left: 4px solid;
+            border-image: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%) 1;
+        }
+
+        .featured-products-card {
+            background: linear-gradient(135deg, rgba(245, 133, 41, 0.02) 0%, rgba(236, 72, 153, 0.02) 50%, rgba(168, 85, 247, 0.02) 100%);
+            border: 2px dashed #e5e7eb;
+        }
+
+        /* ===== Swiper Auto Slider Styles ===== */
+        .ads-slider-container {
+            position: relative;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .swiper {
+            width: 100%;
+            height: auto;
+        }
+
+        .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 160px; /* Further reduced height for better fit (from 192px) */
+            object-fit: cover;
+            display: block;
+            border-radius: 0.5rem;
+        }
+
+        /* Custom Swiper Navigation Dots */
+        .swiper-pagination {
+            position: absolute;
+            bottom: 8px; /* Reduced bottom spacing */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            width: 8px; /* Reduced size */
+            height: 8px; /* Reduced size */
+            margin: 0 4px; /* Reduced margin */
+        }
+
+        .swiper-pagination-bullet-active {
+            background: white;
+            opacity: 1;
+            width: 20px; /* Reduced size */
+            border-radius: 5px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .sidebar-nav a {
+                padding: 0.75rem;
+            }
+
+            .sidebar-nav a span {
+                display: none;
+            }
+
+            .sidebar-nav a i {
+                margin: 0 auto;
+            }
+
+            .swiper-slide img {
+                height: 120px; /* Adjusted for mobile */
+            }
+
+            .swiper-pagination {
+                bottom: 8px;
+            }
+
+            .swiper-pagination-bullet {
+                width: 6px;
+                height: 6px;
+                margin: 0 3px;
+            }
+
+            .swiper-pagination-bullet-active {
+                width: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .swiper-slide img {
+                height: 100px; /* Adjusted for small mobile */
+            }
+
+            .swiper-pagination {
+                bottom: 6px;
+            }
+
+.swiper-pagination-bullet {
+                width: 5px;
+                height: 5px;
+                margin: 0 2px;
+            }
+
+            .swiper-pagination-bullet-active {
+                width: 12px;
+            }
+        }
+
+        /* No Ads Placeholder */
+        .ads-empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 160px; /* Adjusted height */
+            background: linear-gradient(135deg, rgba(245, 133, 41, 0.05) 0%, rgba(236, 72, 153, 0.05) 50%, rgba(168, 85, 247, 0.05) 100%);
+            border-radius: 0.5rem;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .ads-empty-state {
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Bar with Logout -->
+    <div class="p-4 lg:p-4 max-w-7xl mx-auto"> <!-- Reduced vertical padding: lg:p-8 -> lg:p-4 -->
+        <div class="top-bar">
+            <div class="top-bar-title">Marketing System</div>
+            <a href="{% url 'users:logout' %}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-4 p-4 lg:p-4 max-w-7xl mx-auto"> <!-- Reduced vertical padding: lg:p-8 -> lg:p-4 -->
+        <!-- Sidebar -->
+        <aside class="w-full lg:w-72 flex-shrink-0 flex flex-col">
+            <div class="sidebar-card overflow-hidden flex flex-col flex-1">
+                <div class="sidebar-header">
+                    Buyer Panel
+                </div>
+                <ul class="sidebar-nav flex-1">
+                    <li>
+                        <a href="{% url 'users:buyer_dashboard' %}" class="nav-item-active">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'shops:shop_list' %}">
+                            <i class="fas fa-store"></i>
+                            <span>Browse Shops</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'products:search_by_category' %}">
+                            <i class="fas fa-box"></i>
+                            <span>Browse Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'wishlist:view_wishlist' %}">
+                            <i class="fas fa-heart"></i>
+                            <span>Favorites</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'orders:my_orders' %}">
+                            <i class="fas fa-receipt"></i>
+                            <span>My Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'baskets:view_basket' %}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Shopping Basket</span>
+                        </a>
+                    </li>
+                    <li>
+
+  <a href="{% url 'chat:inbox' %}">
+     <i class="fas fa-comments"></i>
+  <span>My Chats</span>
+</a>
+
+</li>
+
+                    <li>
+                        <a href="{% url 'advertisement:show_ads' %}">
+                            <i class="fas fa-bullhorn"></i>
+                            <span>Advertisements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'offers:show_offers' %}">
+                            <i class="fas fa-percentage"></i>
+                            <span>Flash offers</span>
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="{% url 'recommendations:gift' %}">
+                           <i class="fas fa-gift"></i>
+                            <span>Gift Ideas</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'users:logout' %}" style="color: #dc2626;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+
+</div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0">
+            <!-- Welcome Section -->
+            <div class="welcome-card rounded-lg p-4 mb-4 border-l-4 border-transparent" style="border-image: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%) 1;"> <!-- Reduced padding and margin: p-6 mb-6 -> p-4 mb-4 -->
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1"> <!-- Reduced text size: text-2xl -> text-xl, mb-2 -> mb-1 -->
+                            Welcome, <span class="gradient-text">{{ request.user.username }}</span> 
+                        </h3>
+                        <p class="text-gray-600 text-sm"> <!-- Removed lg:text-base -->
+                            Discover products from different shops and manage your orders easily.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Advertisements Section with Auto Slider -->
+            <div class="bg-white rounded-lg p-4 shadow-sm mb-4"> <!-- Reduced padding and margin: p-6 mb-8 -> p-4 mb-4 -->
+                <div class="flex items-center gap-3 mb-3"> <!-- Reduced margin: mb-6 -> mb-3 -->
+                    <i class="fas fa-bullhorn text-xl gradient-text"></i> <!-- Reduced icon size: text-2xl -> text-xl -->
+                    <h5 class="text-lg font-semibold text-gray-900"> <!-- Reduced text size: text-xl -> text-lg -->
+                        Advertisements
+                    </h5>
+                </div>
+
+                {% if ads %}
+                    <!-- Swiper Carousel Container -->
+                    <div class="ads-slider-container">
+                        <div class="swiper adsSwiper">
+                            <div class="swiper-wrapper">
+                                {% for ad in ads %}
+                                    <div class="swiper-slide">
+                                        <img src="{{ ad.image.url }}" 
+                                             alt="Advertisement"
+                                             loading="lazy">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <!-- Pagination Dots -->
+                            <div class="swiper-pagination"></div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="ads-empty-state">
+                        <div class="text-center">
+                            <i class="fas fa-inbox text-3xl mb-2 opacity-50"></i> <!-- Reduced icon size: text-4xl -> text-3xl, mb-3 -> mb-2 -->
+                            <p class="text-gray-500 text-sm">No advertisements available.</p> <!-- Reduced text size: text-base -> text-sm -->
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Flash Offers Section -->
+            <div class="bg-white rounded-lg p-4 shadow-sm"> <!-- Reduced padding: p-6 -> p-4 -->
+                <div class="flex items-center gap-3 mb-3"> <!-- Reduced margin: mb-6 -> mb-3 -->
+                    <i class="fas fa-bolt text-xl gradient-text"></i> <!-- Reduced icon size: text-2xl -> text-xl -->
+                    <h5 class="text-lg font-semibold text-gray-900"> <!-- Reduced text size: text-xl -> text-lg -->
+                        Flash Offers
+                    </h5>
+                </div>
+
+                {% if offers %}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4"> <!-- Reduced gap: gap-6 -> gap-4 -->
+                        {% for offer in offers %}
+                            <a href="{% url 'products:product_detail' offer.product.id %}"
+                               class="rounded-lg overflow-hidden shadow hover:shadow-lg transition block">
+
+<!-- Product Image -->
+                                <img src="{{ offer.product.productImage.url }}"
+                                     class="w-full h-40 object-cover"> <!-- Reduced height: h-48 -> h-40 -->
+
+                                <!-- Offer Info -->
+                                <div class="p-3 bg-white border-t"> <!-- Reduced padding: p-4 -> p-3 -->
+
+                                    <p class="text-sm font-semibold text-gray-800 mb-1">
+                                        {{ offer.product.productName }}
+                                    </p>
+
+                                    <p class="text-xs text-gray-500"> <!-- Reduced text size: text-sm -> text-xs -->
+                                        <del>{{ offer.old_price }}</del>
+                                        <span class="text-green-600 font-bold ml-2">
+                                            {{ offer.new_price }}
+                                        </span>
+                                    </p>
+
+                                    <p class="text-xs text-gray-500 mt-1"> <!-- Reduced margin: mt-2 -> mt-1 -->
+                                        Valid until {{ offer.end_date|date:"d/m/Y" }}
+                                    </p>
+
+                                </div>
+
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-500 text-center">
+                        No flash offers available.
+                    </p>
+                {% endif %}
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Swiper.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        // Initialize Swiper for Advertisements Auto Slider
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there are ads
+            const adsSwiper = document.querySelector('.adsSwiper');
+            if (adsSwiper && adsSwiper.querySelectorAll('.swiper-slide').length > 0) {
+                new Swiper('.adsSwiper', {
+                    loop: true,
+                    autoplay: {
+                        delay: 4000,
+                        disableOnInteraction: false,
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                        dynamicBullets: true,
+                    },
+                    speed: 800,
+                    spaceBetween: 16, // Reduced gap: gap-6 -> gap-4 equivalent
+                    slidesPerView: 1, // Default for mobile
+
+                    // Responsive breakpoints
+                    breakpoints: {
+                        640: { // Small screens (sm)
+                            slidesPerView: 2,
+                            spaceBetween: 12, // Reduced gap
+                        },
+                        1024: { // Large screens (lg)
+                            slidesPerView: 3,
+                            spaceBetween: 16, // Reduced gap
+                        },
+                    },
+                });
+            }
+
+            // Add active class to current page link
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('nav-item-active');
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('nav-item-active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

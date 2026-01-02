@@ -1,0 +1,226 @@
+{% load static %}
+
+<style>
+  :root {
+    --color-purple: #8134AF;
+    --color-pink: #DD2A7B;
+    --color-orange: #F58529;
+    --color-bg-light: #FAFAFA;
+    --color-bg-white: #FFFFFF;
+    --color-border-light: #E5E5E5;
+    --color-text-primary: #262626;
+    --color-text-secondary: #65676B;
+    --color-text-muted: #A0A0A0;
+    --gradient-instagram: linear-gradient(135deg, #8134AF 0%, #DD2A7B 50%, #F58529 100%);
+  }
+
+  .conversation-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    background-color: var(--color-bg-white);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .conversation-item:hover {
+    background-color: var(--color-bg-light);
+    border-color: var(--color-border-light);
+    transform: translateX(4px);
+  }
+
+  .conversation-avatar {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-instagram);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .conversation-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+    gap: 8px;
+  }
+
+  .conversation-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 14px;
+  }
+
+  .conversation-time {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .conversation-shop {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .conversation-shop i {
+    font-size: 11px;
+  }
+
+  .conversation-preview {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .conversation-preview.unread {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .conversation-badge {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    background: var(--gradient-instagram);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .conversation-item {
+    animation: slideIn 250ms ease-out;
+  }
+
+  @media (max-width: 768px) {
+    .conversation-item {
+      padding: 10px;
+      gap: 10px;
+    }
+
+    .conversation-avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+
+    .conversation-name {
+      font-size: 13px;
+    }
+
+    .conversation-time {
+      font-size: 11px;
+    }
+  }
+</style>
+
+<h5 class="mb-3 fw-bold">
+  <i class="bi bi-chat-dots me-2"></i> My Conversations
+</h5>
+
+{% for item in conversations_data %}
+  {% with conversation=item.conversation %}
+
+    <a href="{% url 'chat:chat_detail' conversation.id %}"
+       class="conversation-item">
+
+      <!-- Avatar -->
+      <div class="conversation-avatar">
+        {% if request.user == conversation.buyer %}
+          {{ conversation.seller.username|first|upper }}
+        {% else %}
+          {{ conversation.buyer.username|first|upper }}
+        {% endif %}
+      </div>
+
+      <!-- Content -->
+      <div class="conversation-content">
+
+        <!-- Header -->
+        <div class="conversation-header">
+          <span class="conversation-name">
+            {% if request.user == conversation.buyer %}
+              {{ conversation.seller.username }}
+            {% else %}
+              {{ conversation.buyer.username }}
+            {% endif %}
+          </span>
+
+          <span class="conversation-time">
+            {{ conversation.last_updated|timesince }} ago
+          </span>
+        </div>
+
+        <!-- Shop -->
+        <div class="conversation-shop">
+          <i class="bi bi-shop"></i>
+          {{ conversation.related_shop.shopName }}
+        </div>
+
+        <!-- Last Message -->
+        <div class="conversation-preview {% if item.unread_count > 0 %}unread{% endif %}">
+          {% if conversation.last_message %}
+            {% if conversation.last_message.sender == request.user %}
+              You:
+            {% endif %}
+            {{ conversation.last_message.content|truncatewords:8 }}
+          {% else %}
+            <em>chat</em>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <!-- Unread badge -->
+      {% if item.unread_count > 0 %}
+        <div class="conversation-badge">
+          {{ item.unread_count }}
+        </div>
+      {% endif %}
+
+    </a>
+
+  {% endwith %}
+{% empty %}
+  <p class="text-muted">No conversations yet.</p>
+{% endfor %}

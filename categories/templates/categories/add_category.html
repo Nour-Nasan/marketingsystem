@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5" style="max-width: 600px">
+  <h2 class="mb-4 fw-bold text-gradient">Add New Category</h2>
+
+  <form method="post" class="bg-white p-4 rounded-4 shadow-sm border-0">
+    {% csrf_token %} {{ form.as_p }}
+
+    <div class="d-flex justify-content-between mt-4">
+      <button type="submit" class="btn btn-gradient">
+        <i class="bi bi-plus-circle"></i> Save Category
+      </button>
+      <a
+        href="{% url 'categories:manage_categories' %}"
+        class="btn btn-outline-secondary"
+      >
+        Back
+      </a>
+    </div>
+  </form>
+</div>
+
+<!-- Styling -->
+<style>
+  .btn-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 20px;
+  }
+
+  .btn-gradient:hover {
+    background: linear-gradient(to right, #833ab4, #e1306c);
+    color: white;
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  form label {
+    font-weight: bold;
+    color: #444;
+  }
+
+  form input {
+    border-radius: 10px;
+  }
+</style>
+{% endblock %}

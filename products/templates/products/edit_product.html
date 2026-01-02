@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-page-container">
+  <div class="form-card">
+    <!-- Card Header with Instagram Gradient -->
+    <div class="form-card-header">
+      <h2 class="form-title">Edit Product</h2>
+      <p class="form-subtitle">Editing: {{ product.productName }}</p>
+    </div>
+
+    <!-- Form Body -->
+    <div class="form-card-body">
+      <form
+        method="post"
+        enctype="multipart/form-data"
+        class="product-form"
+      >
+        {% csrf_token %}
+
+        <!-- Product Name -->
+        <div class="form-group">
+          <label for="id_productName" class="form-label">Product Name</label>
+          {{ form.productName }}
+        </div>
+
+        <!-- Price -->
+        <div class="form-group">
+          <label for="id_productPrice" class="form-label">Price</label>
+          {{ form.productPrice }}
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label for="id_category" class="form-label">Category</label>
+          {{ form.category }}
+        </div>
+
+        <!-- Current Image Display -->
+        {% if product.productImage %}
+        <div class="form-group current-image-group">
+          <label class="form-label">Current Image:</label>
+          <div class="image-preview-container">
+            <img
+              src="{{ product.productImage.url }}"
+              alt="Current Product Image"
+              class="image-preview"
+            />
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Change Image -->
+        <div class="form-group">
+          <label for="id_productImage" class="form-label">Change Image</label>
+          {{ form.productImage }}
+          <small class="form-text text-muted">Upload a new image to replace the current one.</small>
+        </div>
+
+        <!-- Product Description -->
+        <div class="form-group">
+          <label class="form-label">Product Description</label>
+          {{ form.productDescription }}
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <span class="btn-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+            </span>
+            Save Changes
+          </button>
+          <a
+            href="{% url 'products:manage_products' %}"
+            class="btn btn-secondary"
+            >Back to Products</a
+          >
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Styles -->
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Instagram-inspired color palette */
+  :root {
+    --instagram-gradient: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+    --primary-color: #d62976; /* Pink/Red from gradient */
+    --primary-dark: #962fbf; /* Purple from gradient */
+    --danger-color: #ef4444;
+    --danger-dark: #dc2626;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --bg-lighter: #f3f4f6;
+    --border-color: #e5e7eb;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-lighter);
+    color: var(--text-primary);
+    direction: ltr;
+  }
+
+  .form-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .form-card {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  /* Card Header with Gradient */
+  .form-card-header {
+    background: var(--instagram-gradient);
+    color: white;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .form-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+
+  .form-card-body {
+    padding: 30px;
+  }
+
+  /* Form Styling */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+
+  .product-form input:not([type="file"]),
+  .product-form select,
+  .product-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .product-form input:focus:not([type="file"]),
+  .product-form select:focus,
+  .product-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(214, 41, 118, 0.2); /* Light pink shadow on focus */
+  }
+
+  .product-form textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .form-text {
+    display: block;
+    margin-top: 5px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+
+  /* Image Preview Styling */
+  .current-image-group {
+    margin-bottom: 30px;
+  }
+
+  .image-preview-container {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    display: inline-block;
+    background-color: var(--bg-lighter);
+  }
+
+  .image-preview {
+    height: 100px;
+    width: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Action Buttons */
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .btn-primary {
+    background: var(--instagram-gradient);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -5px rgba(214, 41, 118, 0.3);
+  }
+
+  .btn-secondary {
+    background-color: var(--bg-lighter);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--border-color);
+    color: var(--text-primary);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 600px) {
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+    }
+
+    .form-card-header {
+      padding: 20px;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+    }
+
+    .form-card-body {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}

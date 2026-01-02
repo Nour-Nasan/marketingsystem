@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <!-- Main Product Card -->
+  <div class="card shadow-lg p-4 rounded-4 product-card">
+    <div class="row g-5">
+      <!-- Product Image Column -->
+      <div class="col-md-6 d-flex justify-content-center align-items-center">
+        {% if product.productImage %}
+        <div class="image-container shadow-lg rounded-4">
+          <img
+            src="{{ product.productImage.url }}"
+            alt="Product Image"
+            class="img-fluid product-image"
+          />
+        </div>
+        {% else %}
+        <div class="no-image-placeholder">
+          <i class="bi bi-image-fill"></i>
+          <p class="mt-2">No image available</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Details Column -->
+      <div class="col-md-6">
+        <h1 class="fw-bolder mb-3 product-title text-gradient">{{ product.productName }}</h1>
+        <h3 class="mb-4 price-text">{{ product.productPrice }} SYP</h3>
+
+        <div class="details-group mb-4">
+          <p class="detail-item"><strong>Category:</strong> <span>{{ product.category.name }}</span></p>
+          <p class="detail-item"><strong>Shop:</strong> <span>{{ product.shop.shopName }}</span></p>
+        </div>
+
+        <!-- Description and Wishlist -->
+        <div class="description-box p-4 rounded-3 mb-4">
+          <h5 class="fw-bold mb-3 description-title">Description</h5>
+          <p class="mb-0 text-muted">
+            {{ product.productDescription }}
+          </p>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between">
+          <!-- Wishlist Toggle -->
+          {% if user.is_authenticated and user.role == 'buyer' %}
+            <a
+              href="{% url 'wishlist:toggle' product.id %}?next={{ request.get_full_path|urlencode }}"
+              class="btn-wishlist"
+              title="Toggle wishlist"
+            >
+              {% if is_in_wishlist %}
+                <i class="bi bi-heart-fill filled-heart"></i>
+              {% else %}
+                <i class="bi bi-heart empty-heart"></i>
+              {% endif %}
+            </a>
+          {% endif %}
+{% if user.is_authenticated and user.role == 'buyer' %}
+ <a
+  href="{% url 'chat:start_conversation' product.shop.id %}"
+  class="btn btn-message-seller-detail ms-3"
+  title="Message Seller"
+>
+  <i class="bi bi-chat-dots me-1"></i>
+  Message Seller
+</a>
+
+{% endif %}
+
+          <!-- Back Buttons -->
+          <div class="ms-auto">
+            {% if user.is_authenticated and user.is_seller %}
+            <a
+              href="{% url 'products:manage_products' %}"
+              class="btn btn-outline-secondary btn-back"
+            >
+              <i class="bi bi-arrow-left"></i> Back to Management
+            </a>
+            {% elif user.is_authenticated and user.is_buyer %}
+            <a
+              href="{% url 'products:search_by_category' %}"
+              class="btn btn-outline-primary btn-back"
+            >
+              <i class="bi bi-arrow-left"></i> Back to Browse
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Reviews Section -->
+  <hr class="my-5 review-separator" />
+  <div class="mt-4">
+    <h3 class="mb-4 review-header">
+      <i class="bi bi-chat-quote-fill me-2"></i> Customer Reviews
+    </h3>
+
+    {% if product.comments.exists %}
+      {% for comment in product.comments.all %}
+        {% if not comment.parent %}
+          <div class="card mb-4 shadow-sm comment-card">
+            <div class="card-body">
+
+              <!-- Comment Content -->
+              <p class="mb-1 comment-text">{{ comment.text }}</p>
+              <div class="text-muted small mb-3 comment-meta">
+                <i class="bi bi-person-circle"></i>
+                {{ comment.user.username }} • {{ comment.created_at|date:"Y-m-d H:i" }}
+              </div>
+
+              <!-- Replies -->
+              <div class="ms-4 ps-3 reply-section">
+                {% for reply in comment.replies.all %}
+                  <div class="mb-3 reply-item p-2 rounded">
+                    <strong class="small reply-user">{{ reply.user.username }}</strong>
+                    <p class="small mb-1 reply-text">{{ reply.text }}</p>
+                    <small class="text-muted reply-date">
+                      {{ reply.created_at|date:"Y-m-d H:i" }}
+                    </small>
+                  </div>
+                {% empty %}
+                  <p class="small text-muted">No replies yet.</p>
+                {% endfor %}
+              </div>
+
+              <!-- Reply Form -->
+              {% if user.is_authenticated %}
+                <form
+                  method="post"
+                  action="{% url 'comments:add_reply' comment.id %}"
+                  class="mt-3"
+                >
+                  {% csrf_token %}
+                  <textarea
+                    name="text"
+                    class="form-control mb-2 reply-textarea"
+                    rows="2"
+                    placeholder="Write a reply..."
+                    required
+                  ></textarea>
+                  <button class="btn btn-sm btn-reply">
+                    Reply
+                  </button>
+                </form>
+              {% endif %}
+
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">There are no reviews for this product yet.</p>
+    {% endif %}
+
+    <!-- ADD COMMENT BUTTON -->
+    {% if user.is_authenticated and user.role == 'buyer' %}
+      {% if can_comment %}
+        <div class="mt-4 text-end">
+          <a
+            href="{% url 'comments:add_comment' product.id %}"
+            class="btn btn-add-review"
+          >
+            <i class="bi bi-chat-dots"></i> Add a Review
+          </a>
+        </div>
+      {% else %}
+        <div class="alert alert-warning mt-4 review-alert">
+          You can review this product only after the order is delivered.
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+<!-- Styling -->
+<style>
+  /* Instagram Gradient Colors */
+  :root {
+    --ig-blue: #515bd4;
+    --ig-purple: #8134af;
+    --ig-pink: #dd2a7b;
+    --ig-orange: #f58529;
+    --ig-yellow: #feda77;
+    --ig-gradient: linear-gradient(45deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-orange), var(--ig-yellow));
+    --ig-gradient-short: linear-gradient(to right, var(--ig-purple), var(--ig-pink));
+    --ig-price-color: #00a854; /* A clean green for price */
+  }
+
+  /* Universal Styling */
+  .product-card { border: none; }
+  .text-gradient {
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Product Details */
+  .product-title { font-size: 2.5rem; }
+  .price-text { color: var(--ig-price-color); font-weight: 700; font-size: 2rem; }
+  .detail-item { margin-bottom: 0.5rem; }
+  .detail-item strong { color: #333; }
+  .detail-item span { color: #555; }
+
+  /* Image */
+  .image-container {
+    width: 100%;
+    max-width: 450px;
+    height: 450px;
+    overflow: hidden;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .product-image:hover {
+    transform: scale(1.05);
+  }
+  .no-image-placeholder {
+    font-size: 1.5rem;
+    color: #ccc;
+    text-align: center;
+  }
+
+  /* Description Box */
+  .description-box {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+  }
+  .description-title {
+    color: var(--ig-purple);
+  }
+
+  /* Wishlist Button */
+  .btn-wishlist {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .btn-wishlist:hover {
+    transform: scale(1.1);
+  }
+  .empty-heart, .filled-heart {
+    font-size: 2rem;
+    color: var(--ig-pink);
+  }
+  .empty-heart:hover {
+    color: var(--ig-purple);
+  }
+
+  /* Back Button */
+  .btn-back {
+    border-radius: 25px;
+    font-weight: 500;
+    color: var(--ig-purple);
+    border-color: var(--ig-purple);
+    transition: all 0.3s ease;
+  }
+  .btn-back:hover {
+    background-color: var(--ig-purple);
+    color: white;
+  }
+
+  /* Reviews Section */
+  .review-separator { border-top: 2px solid #f0f0f0; }
+  .review-header { color: var(--ig-purple); font-weight: 700; }
+  .comment-card { border: 1px solid #f0f0f0; border-left: 5px solid var(--ig-pink); }
+  .comment-meta { color: #999 !important; }
+
+  /* Replies */
+  .reply-section {
+    border-left: 3px solid var(--ig-blue);
+    background-color: #fcfcfc;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .reply-item {
+    background-color: #fff;
+    border: 1px solid #eee;
+  }
+  .reply-user { color: var(--ig-purple); }
+  .reply-textarea { border-radius: 0.5rem; }
+
+  /* Review/Reply Buttons */
+  .btn-reply {
+    background-color: var(--ig-blue);
+    color: white;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+  }
+  .btn-reply:hover {
+    background-color: var(--ig-purple);
+  }
+
+  .btn-add-review {
+    background: var(--ig-gradient-short);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-add-review:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+  }
+  .review-alert {
+    border-left: 5px solid var(--ig-orange);
+    background-color: #fffbe6;
+    color: #856404;
+  }
+  /* Message Seller Button – Product Detail */
+.btn-message-seller-detail {
+  background: white;
+  color: var(--ig-purple);
+  font-weight: 600;
+  border: 2px solid var(--ig-pink);
+  border-radius: 999px;
+  padding: 0.55rem 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.3s ease;
+}
+
+.btn-message-seller-detail:hover {
+  background: var(--ig-gradient-short);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(221, 42, 123, 0.25);
+}
+
+</style>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+  <h1 class="fw-bolder mb-5 text-gradient text-center">
+    <i class="bi bi-heart-fill me-2"></i> My Wishlist
+  </h1>
+
+  {% if items %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for item in items %}
+        <div class="col">
+          <div class="card h-100 shadow-lg rounded-4 wishlist-card">
+
+            {% if item.product.productImage %}
+              <img
+                src="{{ item.product.productImage.url }}"
+                class="card-img-top product-img"
+                alt="Product image"
+              />
+            {% else %}
+              <div class="no-image-placeholder-sm">No Image</div>
+            {% endif %}
+
+            <div class="card-body text-center d-flex flex-column">
+              <h5 class="card-title fw-bold product-name-text">
+                {{ item.product.productName }}
+              </h5>
+              <p class="price-text fw-bold mb-3">
+                {{ item.product.productPrice }} SYP
+              </p>
+            </div>
+
+            <div class="card-footer bg-white border-0 d-flex justify-content-between p-3">
+              <a
+                href="{% url 'products:product_detail' item.product.id %}"
+                class="btn btn-view-product w-50 me-2"
+              >
+                View
+              </a>
+
+             <a href="{% url 'wishlist:remove_item' item.id %}" class="btn btn-remove-item w-50 ms-2">
+                Remove
+              </a>
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="alert custom-alert text-center mt-5">
+      <p class="mb-2 fw-bold">Your wishlist is empty.</p>
+      <a href="{% url 'products:search_by_category' %}" class="alert-link-ig">
+        Browse products now
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+
+<!-- Styling -->
+<style>
+  /* Instagram Gradient Colors */
+  :root {
+    --ig-blue: #515bd4;
+    --ig-purple: #8134af;
+    --ig-pink: #dd2a7b;
+    --ig-orange: #f58529;
+    --ig-yellow: #feda77;
+    --ig-gradient: linear-gradient(45deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-orange), var(--ig-yellow));
+    --ig-gradient-short: linear-gradient(to right, var(--ig-purple), var(--ig-pink));
+    --ig-price-color: #00a854; /* Clean green for price */
+  }
+
+  /* Universal Styling */
+  .text-gradient {
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Wishlist Card */
+  .wishlist-card {
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .wishlist-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .product-img {
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: calc(0.75rem - 1px);
+    border-top-right-radius: calc(0.75rem - 1px);
+  }
+
+  .no-image-placeholder-sm {
+    height: 220px;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-weight: 600;
+    border-top-left-radius: calc(0.75rem - 1px);
+    border-top-right-radius: calc(0.75rem - 1px);
+  }
+
+  .product-name-text {
+    color: #333;
+  }
+
+  .price-text {
+    color: var(--ig-price-color);
+    font-size: 1.2rem;
+  }
+
+  /* View Product Button (Gradient Outline) */
+  .btn-view-product {
+    color: var(--ig-pink);
+    border: 2px solid var(--ig-pink);
+    background-color: white;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease-in-out;
+  }
+  .btn-view-product:hover {
+    background: var(--ig-gradient-short);
+    color: white;
+    border-color: transparent;
+  }
+
+  /* Remove Button */
+  .btn-remove-item {
+    background-color: #ffe6e6; /* Light Red/Pink */
+    color: #cc0000; /* Dark Red */
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-remove-item:hover {
+    background-color: #cc0000;
+    color: white;
+  }
+
+  /* Custom Alert for Empty Wishlist */
+  .custom-alert {
+    background-color: #fcf0fc; /* Very light purple/pink */
+    border: 1px solid #e0b0e0; /* Light purple border */
+    color: var(--ig-purple);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  .alert-link-ig {
+    color: var(--ig-pink);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .alert-link-ig:hover {
+    color: var(--ig-purple);
+    text-decoration: underline;
+  }
+</style>
+
+{% endblock %}

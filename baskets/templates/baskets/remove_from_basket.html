@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5" style="max-width: 650px">
+  <h2 class="mb-4 fw-bold text-gradient">Confirm Removal</h2>
+
+  <div class="custom-alert p-4 rounded-4 mb-4">
+    <p class="mb-0">
+      Are you sure you want to remove
+      <strong>{{ item.product.productName }}</strong> from your basket?
+    </p>
+  </div>
+
+  <form method="post" class="d-flex gap-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">
+      <i class="bi bi-trash"></i> Yes, Remove
+    </button>
+    <a href="{% url 'baskets:view_basket' %}" class="btn btn-outline-secondary">
+      Cancel
+    </a>
+  </form>
+</div>
+
+<!-- Styling -->
+<style>
+  .custom-alert {
+    background-color: #fff0f6; /* وردي ناعم */
+    border: 1px solid #f8c7d8;
+    color: #a23b5c;
+    font-weight: 500;
+  }
+
+  .btn-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 20px;
+  }
+
+  .btn-gradient:hover {
+    background: linear-gradient(to right, #833ab4, #e1306c);
+    color: white;
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, #f58529, #dd2a7b);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
+{% endblock %}

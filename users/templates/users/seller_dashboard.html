@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .top-bar {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 0.85rem 1rem; /* slightly shorter */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem; /* tighter */
+        }
+
+        .top-bar-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 0.9rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            line-height: 1;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid #e5e7eb;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        .sidebar-logout a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+
+        .sidebar-logout a:hover {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+        }
+
+        .nav-item-active {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white !important;
+        }
+
+        .quick-action-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-gradient:hover {
+            box-shadow: 0 8px 20px rgba(245, 133, 41, 0.3);
+            color: white;
+        }
+
+        .sidebar-card {
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 1rem;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.95rem 1rem;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: #f9fafb;
+            color: #f58529;
+            padding-left: 1.25rem;
+        }
+
+        .welcome-card {
+            background: linear-gradient(
+                135deg,
+                rgba(245, 133, 41, 0.05),
+                rgba(236, 72, 153, 0.05),
+                rgba(168, 85, 247, 0.05)
+            );
+            border-left: 4px solid;
+            border-image: linear-gradient(135deg, #f58529, #ec4899, #a855f7) 1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+<!-- Top Bar with Logout -->
+<div class="p-4 lg:p-6 max-w-7xl mx-auto">
+    <div class="top-bar">
+        <div class="top-bar-title">Marketing System</div>
+        <a href="{% url 'users:logout' %}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</div>
+
+<div class="flex flex-col lg:flex-row gap-5 p-4 lg:p-6 max-w-7xl mx-auto">
+
+    <!-- Sidebar -->
+    <aside class="w-full lg:w-72 flex flex-col">
+        <div class="sidebar-card overflow-hidden flex flex-col flex-1">
+            <div class="sidebar-header">Seller Panel</div>
+            <ul class="sidebar-nav flex-1">
+                <li>
+                    <a href="{% url 'users:seller_dashboard' %}" class="nav-item-active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'shops:manage_shop' %}">
+                        <i class="fas fa-store"></i>
+                        <span>My Shop</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'categories:manage_categories' %}">
+                        <i class="fas fa-box"></i>
+                        <span>Categories</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'products:manage_products' %}">
+                        <i class="fas fa-cubes"></i>
+                        <span>Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'orders:view_orders' %}">
+                        <i class="fas fa-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'advertisement:my_ads' %}">
+                        <i class="fas fa-bullhorn"></i>
+                        <span>Advertisements</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'offers:my_offers' %}">
+                        <i class="fas fa-percentage"></i>
+                        <span>Flash Offers</span>
+                    </a>
+                </li>
+                <li>
+  <a href="{% url 'chat:inbox' %}">
+    <i class="fas fa-comments"></i>
+    <span>Messages</span>
+  </a>
+</li>
+
+                <li>
+                    <a href="{% url 'reports:seller_report' %}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>My Report</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-logout">
+                <a href="{% url 'users:logout' %}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+        <!--
+          Above-the-fold helper:
+          - min-h-[calc(100vh-220px)] keeps the main area tall enough so the grid sits comfortably
+          - (220px is approx. top bar + outer paddings; you can tweak if needed)
+        -->
+        <section class="min-h-[calc(100vh-220px)] flex flex-col">
+
+            <!-- Welcome (shorter height) -->
+            <div class="welcome-card rounded-lg p-4 sm:p-5 mb-4">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-1 leading-tight">
+                    Welcome,
+                    <span class="gradient-text">{{ request.user.username }}</span>
+                </h3>
+                <p class="text-gray-600 text-sm sm:text-base">
+                    Manage your shop, products, and customer orders.
+                </p>
+            </div>
+
+            {% if user.shop %}
+            <!-- Quick Actions (6 cards) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 auto-rows-fr flex-1">
+                <!-- Your Shop -->
+                <div class="quick-action-card bg-white rounded-lg p-5 text-center flex flex-col">
+                    <i class="fas fa-store text-3xl text-orange-500 mb-3"></i>
+                    <h5 class="font-semibold mb-1">Your Shop</h5>
+                    <p class="text-gray-600 text-sm mb-4">Edit shop details</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'shops:manage_shop' %}" class="btn-gradient px-6 py-2 rounded-lg inline-block">
+                            Manage Shop
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Products -->
+                <div class="quick-action-card bg-white rounded-lg p-5 text-center flex flex-col">
+                    <i class="fas fa-cubes text-3xl text-pink-500 mb-3"></i>
+                    <h5 class="font-semibold mb-1">Products</h5>
+                    <p class="text-gray-600 text-sm mb-4">Manage your products</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'products:manage_products' %}" class="btn-gradient px-6 py-2 rounded-lg inline-block">
+                            Manage Products
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Orders -->
+                <div class="quick-action-card bg-white rounded-lg p-5 text-center flex flex-col">
+                    <i class="fas fa-receipt text-3xl text-purple-500 mb-3"></i>
+                    <h5 class="font-semibold mb-1">Orders</h5>
+                    <p class="text-gray-600 text-sm mb-4">View customer orders</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'orders:view_orders' %}" class="btn-gradient px-6 py-2 rounded-lg inline-block">
+                            View Orders
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="quick-action-card bg-white rounded-lg p-5 text-center flex flex-col">
+                    <i class="fas fa-box text-3xl text-orange-500 mb-3"></i>
+                    <h5 class="font-semibold mb-1">Categories</h5>
+                    <p class="text-gray-600 text-sm mb-4">Manage product categories</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'categories:manage_categories' %}" class="btn-gradient px-6 py-2 rounded-lg inline-block">
+                            Manage Categories
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Advertisements -->
+                <div class="quick-action-card bg-white rounded-lg p-5 text-center flex flex-col">
+                    <i class="fas fa-bullhorn text-3xl text-pink-500 mb-3"></i>
+                    <h5 class="font-semibold mb-1">Advertisements</h5>
+                    <p class="text-gray-600 text-sm mb-4">Manage shop ads</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'advertisement:my_ads' %}" class="btn-gradient px-6 py-2 rounded-lg inline-block">
+                            View Ads
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Flash Offers -->
+                <div class="quick-action-card bg-white rounded-lg p-5 text-center flex flex-col">
+                    <i class="fas fa-percentage text-3xl text-purple-500 mb-3"></i>
+                    <h5 class="font-semibold mb-1">Flash Offers</h5>
+                    <p class="text-gray-600 text-sm mb-4">Manage limited-time offers</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'offers:my_offers' %}" class="btn-gradient px-6 py-2 rounded-lg inline-block">
+                            View Offers
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- No Shop -->
+            <div class="bg-white rounded-lg p-8 text-center border border-dashed border-gray-300">
+                <h4 class="text-xl font-semibold mb-3">
+                    You don’t have a shop yet
+                </h4>
+                <p class="text-gray-600 mb-4">
+                    Create your shop to start selling products.
+                </p>
+                <a href="{% url 'shops:add_shop' %}" class="btn-gradient px-8 py-3 rounded-lg inline-block">
+                    Create Shop
+                </a>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const path = window.location.pathname;
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.classList.remove('nav-item-active');
+            if (link.getAttribute('href') === path) {
+                link.classList.add('nav-item-active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

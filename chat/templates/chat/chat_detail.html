@@ -1,0 +1,601 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Chat with
+{% if request.user == conversation.buyer %}
+  {{ conversation.seller.username }}
+{% else %}
+  {{ conversation.buyer.username }}
+{% endif %}
+- Marketing System
+{% endblock %}
+
+{% block content %}
+<div class="ig-chat-container">
+  <div class="ig-chat-wrapper">
+
+    <!-- Header -->
+    <div class="ig-chat-header">
+      <div class="ig-header-left">
+        <a href="{% url 'chat:inbox' %}" class="ig-back-btn" title="Back to inbox">
+          <i class="bi bi-arrow-left"></i>
+        </a>
+        <div class="ig-header-info">
+          <div class="ig-header-username">
+            {% if request.user == conversation.buyer %}
+              {{ conversation.seller.username }}
+            {% else %}
+              {{ conversation.buyer.username }}
+            {% endif %}
+          </div>
+          <div class="ig-header-shop">
+            {{ conversation.related_shop.shopName }}
+          </div>
+        </div>
+      </div>
+
+      <a href="{% url 'chat:confirm_delete_conversation' conversation.id %}" class="ig-delete-btn" title="Delete conversation">
+        <i class="bi bi-trash"></i>
+      </a>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="ig-messages-container" id="chat-messages">
+      {% for message in messages %}
+        <div class="ig-message-wrapper {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+          <div class="ig-message-bubble">
+            {% if message.content %}
+              <p class="ig-message-text">{{ message.content|urlize }}</p>
+            {% endif %}
+
+            {% if message.image %}
+              <img src="{{ message.image.url }}" alt="Message image" class="ig-message-image">
+            {% endif %}
+
+            <div class="ig-message-meta">
+              <span class="ig-message-time">{{ message.timestamp|date:"H:i" }}</span>
+              {% if message.sender == request.user %}
+                <span class="ig-read-icon">
+                  <i class="bi {% if message.is_read %}bi-check2-all{% else %}bi-check2{% endif %}"></i>
+                </span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="ig-empty-state">
+          <i class="bi bi-chat-dots"></i>
+          <p>No messages yet. Start the conversation!</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Input Area -->
+    <div class="ig-input-area">
+      <form method="post" enctype="multipart/form-data" class="ig-message-form">
+        {% csrf_token %}
+        
+        <div class="ig-input-wrapper">
+          <label for="image-upload" class="ig-image-btn" title="Upload image">
+            <i class="bi bi-paperclip"></i>
+            <input type="file" id="image-upload" name="image" accept="image/*" style="display: none;">
+          </label>
+
+          <div class="ig-text-input-wrapper">
+            {{ form.content }}
+          </div>
+
+          <button type="submit" class="ig-send-btn" title="Send message">
+            <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ============================================
+     Instagram Chat Color Palette
+     ============================================ */
+  :root {
+    --ig-primary: #E1306C;           /* Instagram Pink */
+    --ig-secondary: #405DE6;         /* Instagram Blue */
+    --ig-accent: #5B51D8;            /* Instagram Purple */
+    --ig-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --ig-light-bg: #FAFAFA;          /* Light Background */
+    --ig-border: #DBDBDB;            /* Border Color */
+    --ig-text-dark: #262626;         /* Dark Text */
+    --ig-text-light: #8E8E8E;        /* Light Text */
+    --ig-sent-bg: linear-gradient(135deg, #E1306C 0%, #405DE6 100%);
+    --ig-received-bg: #FFFFFF;
+  }
+
+  /* ============================================
+     Chat Container & Wrapper
+     ============================================ */
+  .ig-chat-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--ig-light-bg);
+    padding: 12px;
+  }
+
+  .ig-chat-wrapper {
+    width: 100%;
+    max-width: 600px;
+    height: 90vh;
+    max-height: 800px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ============================================
+     Header Styling
+     ============================================ */
+  .ig-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--ig-border);
+    background: white;
+    flex-shrink: 0;
+  }
+
+  .ig-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ig-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ig-light-bg);
+    color: var(--ig-text-dark);
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 1.1rem;
+    text-decoration: none;
+  }
+
+  .ig-back-btn:hover {
+    background: var(--ig-border);
+    color: var(--ig-text-dark);
+  }
+
+  .ig-header-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ig-header-username {
+    font-weight: 600;
+    color: var(--ig-text-dark);
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ig-header-shop {
+    font-size: 0.8rem;
+    color: var(--ig-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ig-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    color: #DC3545;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+
+  .ig-delete-btn:hover {
+    background: rgba(220, 53, 69, 0.1);
+    color: #DC3545;
+  }
+
+  /* ============================================
+     Messages Container
+     ============================================ */
+  .ig-messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: white;
+  }
+
+  .ig-messages-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .ig-messages-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .ig-messages-container::-webkit-scrollbar-thumb {
+    background: var(--ig-border);
+    border-radius: 3px;
+  }
+
+  .ig-messages-container::-webkit-scrollbar-thumb:hover {
+    background: var(--ig-text-light);
+  }
+
+  /* ============================================
+     Empty State
+     ============================================ */
+  .ig-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--ig-text-light);
+    text-align: center;
+    gap: 12px;
+  }
+
+  .ig-empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.5;
+  }
+
+  .ig-empty-state p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  /* ============================================
+     Message Wrapper & Bubble
+     ============================================ */
+  .ig-message-wrapper {
+    display: flex;
+    margin-bottom: 4px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .ig-message-wrapper.sent {
+    justify-content: flex-end;
+  }
+
+  .ig-message-wrapper.received {
+    justify-content: flex-start;
+  }
+
+  .ig-message-bubble {
+    max-width: 65%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+  }
+
+  .ig-message-wrapper.sent .ig-message-bubble {
+    background: var(--ig-sent-bg);
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+
+  .ig-message-wrapper.sent .ig-message-bubble:hover {
+    box-shadow: 0 2px 8px rgba(225, 48, 108, 0.2);
+  }
+
+  .ig-message-wrapper.received .ig-message-bubble {
+    background: var(--ig-received-bg);
+    color: var(--ig-text-dark);
+    border: 1px solid var(--ig-border);
+    border-bottom-left-radius: 4px;
+  }
+
+  .ig-message-wrapper.received .ig-message-bubble:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  /* ============================================
+     Message Content
+     ============================================ */
+  .ig-message-text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .ig-message-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 6px 0;
+    display: block;
+  }
+
+  .ig-message-wrapper.sent .ig-message-image {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .ig-message-wrapper.received .ig-message-image {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ============================================
+     Message Metadata
+     ============================================ */
+  .ig-message-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .ig-message-time {
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .ig-read-icon {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ============================================
+     Input Area
+     ============================================ */
+  .ig-input-area {
+    padding: 12px 16px;
+    background: white;
+    border-top: 1px solid var(--ig-border);
+    flex-shrink: 0;
+  }
+
+  .ig-message-form {
+    width: 100%;
+  }
+
+  .ig-input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  /* ============================================
+     Image Upload Button
+     ============================================ */
+  .ig-image-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ig-light-bg);
+    color: var(--ig-text-light);
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s ease;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .ig-image-btn:hover {
+    background: var(--ig-border);
+    color: var(--ig-secondary);
+  }
+
+  /* ============================================
+     Text Input Field
+     ============================================ */
+  .ig-text-input-wrapper {
+    flex: 1;
+    display: flex;
+  }
+
+  .ig-text-input-wrapper textarea,
+  .ig-text-input-wrapper input[type="text"] {
+    width: 100%;
+    border: 1.5px solid var(--ig-border);
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    color: var(--ig-text-dark);
+    font-family: inherit;
+    resize: none;
+    max-height: 100px;
+    transition: all 0.25s ease;
+  }
+
+  .ig-text-input-wrapper textarea:focus,
+  .ig-text-input-wrapper input[type="text"]:focus {
+    outline: none;
+    border-color: var(--ig-secondary);
+    box-shadow: 0 0 0 3px rgba(64, 93, 230, 0.1);
+  }
+
+  .ig-text-input-wrapper textarea::placeholder,
+  .ig-text-input-wrapper input[type="text"]::placeholder {
+    color: var(--ig-text-light);
+  }
+
+  /* ============================================
+     Send Button
+     ============================================ */
+  .ig-send-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ig-sent-bg);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .ig-send-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(225, 48, 108, 0.3);
+  }
+
+  .ig-send-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* ============================================
+     Responsive Design
+     ============================================ */
+  @media (max-width: 768px) {
+    .ig-chat-container {
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .ig-chat-wrapper {
+      max-width: 100%;
+      height: 100vh;
+      max-height: none;
+      border-radius: 0;
+    }
+
+    .ig-message-bubble {
+      max-width: 80%;
+    }
+
+    .ig-header-username {
+      font-size: 0.9rem;
+    }
+
+    .ig-header-shop {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ig-chat-header {
+      padding: 10px 12px;
+    }
+
+    .ig-messages-container {
+      padding: 12px;
+      gap: 6px;
+    }
+
+    .ig-input-area {
+      padding: 10px 12px;
+    }
+
+    .ig-message-bubble {
+      max-width: 85%;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+
+    .ig-back-btn,
+    .ig-delete-btn,
+    .ig-image-btn,
+    .ig-send-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 0.95rem;
+    }
+
+    .ig-text-input-wrapper textarea,
+    .ig-text-input-wrapper input[type="text"] {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .ig-message-time {
+      font-size: 0.7rem;
+    }
+  }
+
+  /* ============================================
+     Remove Default Form Styling
+     ============================================ */
+  .ig-text-input-wrapper input,
+  .ig-text-input-wrapper textarea {
+    background-color: white;
+    border: 1.5px solid var(--ig-border);
+  }
+
+  .ig-text-input-wrapper input::-webkit-outer-spin-button,
+  .ig-text-input-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+</style>
+
+<script>
+  // Auto-scroll to bottom on page load
+  const chatBox = document.getElementById('chat-messages');
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Auto-scroll when new messages arrive (optional, for real-time updates)
+  const observer = new MutationObserver(() => {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  observer.observe(chatBox, { childList: true });
+
+  // Handle image upload preview (optional enhancement)
+  const imageInput = document.getElementById('image-upload');
+  if (imageInput) {
+    imageInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const fileName = this.files[0].name;
+        console.log('Image selected:', fileName);
+      }
+    });
+  }
+</script>
+{% endblock %}

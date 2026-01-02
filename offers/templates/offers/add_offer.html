@@ -1,0 +1,719 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Flash Offer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        /* ===== Custom CSS Variables ===== */
+        :root {
+            --instagram-gradient: linear-gradient(135deg, #f58529 0%, #dd2a7b 25%, #8134af 50%, #515bd4 100%);
+            --instagram-light: #f58529;
+            --instagram-pink: #dd2a7b;
+            --instagram-purple: #8134af;
+            --instagram-blue: #515bd4;
+            --primary-bg: #ffffff;
+            --secondary-bg: #fafafa;
+            --border-color: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== Global Styles ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f4f8 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        /* ===== Container & Layout ===== */
+        .container-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .card-container {
+            width: 100%;
+            max-width: 550px;
+        }
+
+        /* ===== Card Styling ===== */
+        .offer-card {
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            background: var(--primary-bg);
+            transition: var(--transition-smooth);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .offer-card:hover {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* ===== Header Section ===== */
+        .card-header-custom {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 40px 30px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--instagram-gradient);
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            background: var(--instagram-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .header-title {
+            background: var(--instagram-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ===== Form Body ===== */
+        .card-body-custom {
+            padding: 40px 30px;
+        }
+
+        /* ===== Form Group Styling ===== */
+        .form-group {
+            margin-bottom: 24px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: var(--transition-smooth);
+        }
+
+        .form-label-required::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        /* ===== Input Fields ===== */
+        .form-control,
+        .form-select {
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            background-color: var(--secondary-bg);
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            font-family: inherit;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--instagram-light);
+            background-color: var(--primary-bg);
+            box-shadow: 0 0 0 3px rgba(245, 133, 41, 0.1);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-control:disabled,
+        .form-select:disabled {
+            background-color: #f3f4f6;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* ===== Row Spacing ===== */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 576px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        /* ===== Checkbox Styling ===== */
+        .form-check {
+            margin-bottom: 24px;
+            padding: 12px 14px;
+            background-color: var(--secondary-bg);
+            border-radius: 10px;
+            border: 1.5px solid var(--border-color);
+            transition: var(--transition-smooth);
+        }
+
+        .form-check:hover {
+            border-color: var(--instagram-light);
+            background-color: rgba(245, 133, 41, 0.03);
+        }
+
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            accent-color: var(--instagram-light);
+        }
+
+        .form-check-input:checked {
+            background: var(--instagram-gradient);
+            border-color: transparent;
+            box-shadow: 0 0 0 3px rgba(245, 133, 41, 0.1);
+        }
+
+        .form-check-input:focus {
+            border-color: var(--instagram-light);
+            box-shadow: 0 0 0 3px rgba(245, 133, 41, 0.1);
+        }
+
+        .form-check-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-left: 8px;
+            user-select: none;
+        }
+
+        /* ===== Buttons ===== */
+        .btn-group-custom {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        /* Save Button */
+        .btn-save {
+            background: var(--instagram-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 15px rgba(245, 133, 41, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-save:hover::before {
+            left: 100%;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 133, 41, 0.4);
+        }
+
+        .btn-save:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(245, 133, 41, 0.3);
+        }
+
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Cancel Button */
+        .btn-cancel {
+            background-color: var(--secondary-bg);
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e5e7eb;
+            border-color: #d1d5db;
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel:active {
+            transform: translateY(0);
+        }
+
+        /* ===== Error Messages ===== */
+        .invalid-feedback,
+        .errorlist {
+            display: block;
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .form-control.is-invalid,
+        .form-select.is-invalid {
+            border-color: #ef4444;
+            background-image: none;
+        }
+
+        .form-control.is-invalid:focus,
+        .form-select.is-invalid:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        /* ===== Success Messages ===== */
+        .alert-success {
+            background-color: #ecfdf5;
+            border: 1px solid #d1fae5;
+            color: #065f46;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(245, 133, 41, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 133, 41, 0);
+            }
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 768px) {
+            .card-header-custom {
+                padding: 32px 24px;
+            }
+
+            .header-title {
+                font-size: 24px;
+            }
+
+            .card-body-custom {
+                padding: 32px 24px;
+            }
+
+            .form-label {
+                font-size: 12px;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .btn-save,
+            .btn-cancel {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container-wrapper {
+                padding: 10px;
+            }
+
+            .card-header-custom {
+                padding: 24px 16px;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .header-subtitle {
+                font-size: 13px;
+            }
+
+            .card-body-custom {
+                padding: 24px 16px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-label {
+                font-size: 11px;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .btn-save,
+            .btn-cancel {
+                padding: 11px 16px;
+                font-size: 13px;
+                gap: 6px;
+            }
+
+            .btn-save i,
+            .btn-cancel i {
+                font-size: 16px;
+            }
+        }
+
+        /* ===== Accessibility ===== */
+        .form-control:focus-visible,
+        .form-select:focus-visible,
+        .btn-save:focus-visible,
+        .btn-cancel:focus-visible {
+            outline: 2px solid var(--instagram-light);
+            outline-offset: 2px;
+        }
+
+        /* ===== Dark Mode Support ===== */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-bg: #1f2937;
+                --secondary-bg: #111827;
+                --border-color: #374151;
+                --text-primary: #f3f4f6;
+                --text-secondary: #d1d5db;
+                --text-muted: #9ca3af;
+            }
+
+            body {
+                background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+            }
+
+            .form-control,
+            .form-select {
+                background-color: #374151;
+                color: var(--text-primary);
+            }
+
+            .form-control:focus,
+            .form-select:focus {
+                background-color: #1f2937;
+                border-color: var(--instagram-light);
+            }
+
+            .form-check {
+                background-color: #374151;
+                border-color: #4b5563;
+            }
+
+            .btn-cancel {
+                background-color: #374151;
+                color: var(--text-secondary);
+                border-color: #4b5563;
+            }
+
+            .btn-cancel:hover {
+                background-color: #4b5563;
+                border-color: #6b7280;
+                color: var(--text-primary);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-wrapper">
+        <div class="card-container">
+            <div class="offer-card">
+
+                <!-- Header Section -->
+                <div class="card-header-custom">
+                    <div class="header-icon">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <h1 class="header-title">Add Flash Offer</h1>
+                    <p class="header-subtitle">Create a limited-time discount to attract more customers and boost your sales</p>
+                </div>
+
+                <!-- Body Section -->
+                <div class="card-body-custom">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Product Selection -->
+                        <div class="form-group">
+                            <label for="{{ form.product.id_for_label }}" class="form-label form-label-required">
+                                <i class="bi bi-box-seam me-1" style="color: var(--instagram-light);"></i>
+                                Product
+                            </label>
+                            {{ form.product }}
+                            {% if form.product.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.product.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Pricing Section -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.old_price.id_for_label }}" class="form-label form-label-required">
+                                    <i class="bi bi-tag me-1" style="color: var(--instagram-pink);"></i>
+                                    Original Price
+                                </label>
+                                {{ form.old_price }}
+                                {% if form.old_price.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.old_price.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.new_price.id_for_label }}" class="form-label form-label-required">
+                                    <i class="bi bi-percent me-1" style="color: var(--instagram-purple);"></i>
+                                    Offer Price
+                                </label>
+                                {{ form.new_price }}
+                                {% if form.new_price.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.new_price.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Date Range Section -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.start_date.id_for_label }}" class="form-label form-label-required">
+                                    <i class="bi bi-calendar-event me-1" style="color: var(--instagram-blue);"></i>
+                                    Start Date
+                                </label>
+                                {{ form.start_date }}
+                                {% if form.start_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.start_date.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.end_date.id_for_label }}" class="form-label form-label-required">
+                                    <i class="bi bi-calendar-check me-1" style="color: var(--instagram-light);"></i>
+                                    End Date
+                                </label>
+                                {{ form.end_date }}
+                                {% if form.end_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.end_date.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Activation Toggle -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="{{ form.is_active.id_for_label }}" name="{{ form.is_active.name }}" {% if form.is_active.value %}checked{% endif %}>
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                <i class="bi bi-check-circle me-1" style="color: var(--instagram-light);"></i>
+                                Activate this offer immediately
+                            </label>
+                            {% if form.is_active.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.is_active.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="btn-group-custom">
+                            <button type="submit" class="btn-save">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Save Offer</span>
+                            </button>
+
+                            <a href="{% url 'offers:my_offers' %}" class="btn-cancel">
+                                <i class="bi bi-x-circle"></i>
+                                <span>Cancel</span>
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Form Validation Script -->
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                const forms = document.querySelectorAll('form[novalidate]');
+                Array.prototype.slice.call(forms).forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            });
+        })();
+
+        // Add smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn-save, .btn-cancel').forEach(button => {
+            button.addEventListener('click', function (e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,458 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <h1 class="mb-0 ig-header-title fw-bolder display-5">Browse Products</h1>
+    <a href="{% url 'baskets:view_basket' %}" class="btn btn-ig-basket">
+      <i class="bi bi-basket-fill me-2"></i> View Basket
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <form method="get" class="mb-5 p-4 rounded-4 ig-filter-card shadow-sm">
+    <div class="row align-items-end g-3">
+
+      <!-- Category Filter -->
+      <div class="col-md-6">
+        <label class="form-label fw-bold ig-filter-label">Category</label>
+        <select name="category" class="form-select ig-filter-select" onchange="this.form.submit()">
+          <option value="">All Categories</option>
+         {% for cat in categories %}
+          <option value="{{ cat }}"
+            {% if selected_category == cat %}selected{% endif %}>
+            {{ cat }}
+          </option>
+        {% endfor %}
+        </select>
+      </div>
+
+      <!-- Price Sort -->
+      <div class="col-md-4">
+        <label class="form-label fw-bold ig-filter-label">Price Sort</label>
+        <div class="d-flex gap-3">
+          <a
+            href="?{% if selected_category %}category={{ selected_category|urlencode }}&{% endif %}sort=price_asc"
+            class="btn ig-btn-sort {% if sort == 'price_asc' %}active{% endif %}">
+            <i class="bi bi-arrow-up"></i>
+          </a>
+          <a
+            href="?{% if selected_category %}category={{ selected_category|urlencode }}&{% endif %}sort=price_desc"
+            class="btn ig-btn-sort {% if sort == 'price_desc' %}active{% endif %}">
+            <i class="bi bi-arrow-down"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+  <!-- Products Grid -->
+  <div class="row">
+    {% for product in products %}
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100 ig-product-card border-0 rounded-3">
+
+        {% if product.productImage %}
+          <img src="{{ product.productImage.url }}" class="card-img-top ig-product-img">
+        {% else %}
+          <div class="ig-no-image-placeholder">No Image</div>
+        {% endif %}
+
+        <div class="card-body d-flex flex-column justify-content-between">
+
+          <div>
+            <h5 class="fw-bold ig-product-name">{{ product.productName }}</h5>
+            <p class="ig-price-text fw-bold">{{ product.productPrice }} SYP</p>
+            <p class="ig-meta-text small mb-1">Category: {{ product.category.name }}</p>
+            <p class="ig-meta-text small mb-3">Shop: {{ product.shop.shopName }}</p>
+
+            <!-- Icon Actions Row -->
+            {% if user.is_authenticated and user.role == 'buyer' %}
+            <div class="d-flex align-items-center justify-content-between mb-3">
+
+              <div class="d-flex gap-2">
+                <!-- Wishlist -->
+                <a
+                  href="{% url 'wishlist:toggle' product.id %}?next={{ request.get_full_path|urlencode }}"
+                  class="ig-icon-action ig-icon-wishlist"
+                  title="Add to wishlist">
+                  {% if product.id in wishlist_product_ids %}
+                    <i class="bi bi-heart-fill"></i>
+                  {% else %}
+                    <i class="bi bi-heart"></i>
+                  {% endif %}
+                </a>
+
+                <!-- Message Seller -->
+                <a
+                  href="{% url 'chat:start_conversation' product.shop.owner.id %}"
+                  class="ig-icon-action ig-icon-message"
+                  title="Message seller">
+                  <i class="bi bi-chat-dots"></i>
+                </a>
+              </div>
+
+              <!-- Add to Basket -->
+          <a
+  href="{% url 'baskets:add_to_basket' product.id %}"
+  class="ig-icon-action ig-icon-basket"
+  title="Add to cart">
+  <i class="bi bi-cart3"></i>
+</a>
+
+
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- View Details -->
+          <a href="{% url 'products:product_detail' product.id %}" class="btn ig-btn-details w-100">
+            View Details
+          </a>
+
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="alert ig-alert-empty text-center mt-4">
+        <i class="bi bi-inbox me-2"></i>No products found.
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+/* ============================================
+   Instagram-Inspired Color Palette
+   ============================================ */
+:root {
+  --ig-primary: #E1306C;           /* Instagram Pink */
+  --ig-secondary: #405DE6;         /* Instagram Blue */
+  --ig-accent: #5B51D8;            /* Instagram Purple */
+  --ig-yellow: #FBAF00;            /* Instagram Yellow */
+  --ig-orange: #E4405F;            /* Instagram Orange */
+  --ig-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --ig-light-bg: #FAFAFA;          /* Instagram Light Background */
+  --ig-border: #DBDBDB;            /* Instagram Border */
+  --ig-text-dark: #262626;         /* Instagram Dark Text */
+  --ig-text-light: #8E8E8E;        /* Instagram Light Text */
+}
+
+/* ============================================
+   Header Styling
+   ============================================ */
+.ig-header-title {
+  background: linear-gradient(135deg, #E1306C 0%, #405DE6 50%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.btn-ig-basket {
+  background: linear-gradient(135deg, #E1306C 0%, #405DE6 100%);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(225, 48, 108, 0.2);
+}
+
+.btn-ig-basket:hover {
+  background: linear-gradient(135deg, #D41E5E 0%, #3A4FD0 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(225, 48, 108, 0.35);
+}
+
+/* ============================================
+   Filter Card Styling
+   ============================================ */
+.ig-filter-card {
+  background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+  border: 1px solid var(--ig-border);
+  transition: all 0.3s ease;
+}
+
+.ig-filter-card:hover {
+  border-color: var(--ig-primary);
+  box-shadow: 0 4px 12px rgba(225, 48, 108, 0.1) !important;
+}
+
+.ig-filter-label {
+  color: var(--ig-text-dark);
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.ig-filter-select {
+  border: 1.5px solid var(--ig-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ig-text-dark);
+  font-weight: 500;
+  background-color: white;
+  transition: all 0.25s ease;
+}
+
+.ig-filter-select:focus {
+  border-color: var(--ig-primary);
+  box-shadow: 0 0 0 3px rgba(225, 48, 108, 0.1);
+  outline: none;
+}
+
+.ig-filter-select:hover {
+  border-color: var(--ig-secondary);
+}
+
+.ig-btn-sort {
+  border: 1.5px solid var(--ig-border);
+  background: white;
+  color: var(--ig-text-light);
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: all 0.25s ease;
+  font-weight: 600;
+}
+
+.ig-btn-sort:hover {
+  border-color: var(--ig-secondary);
+  color: var(--ig-secondary);
+  background: rgba(64, 93, 230, 0.05);
+}
+
+.ig-btn-sort.active {
+  background: linear-gradient(135deg, #E1306C 0%, #405DE6 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(225, 48, 108, 0.25);
+}
+
+/* ============================================
+   Product Card Styling
+   ============================================ */
+.ig-product-card {
+  background: white;
+  border: 1px solid var(--ig-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ig-product-card:hover {
+  border-color: var(--ig-primary);
+  box-shadow: 0 8px 24px rgba(225, 48, 108, 0.15);
+  transform: translateY(-4px);
+}
+
+.ig-product-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  background: var(--ig-light-bg);
+}
+
+.ig-product-card:hover .ig-product-img {
+  transform: scale(1.05);
+}
+
+.ig-no-image-placeholder {
+  width: 100%;
+  height: 280px;
+  background: linear-gradient(135deg, #FAFAFA 0%, #F0F0F0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ig-text-light);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--ig-border);
+}
+
+.ig-product-name {
+  color: var(--ig-text-dark);
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.ig-price-text {
+  color: var(--ig-primary);
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.ig-meta-text {
+  color: var(--ig-text-light);
+  font-size: 0.85rem;
+}
+
+/* ============================================
+   Icon Action Buttons
+   ============================================ */
+.ig-icon-action {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ig-light-bg);
+  border: 1.5px solid var(--ig-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.ig-icon-action:hover {
+  transform: translateY(-3px) scale(1.08);
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.ig-icon-wishlist i {
+  color: var(--ig-primary);
+}
+
+.ig-icon-wishlist:hover {
+  background: linear-gradient(135deg, #E1306C 0%, #E4405F 100%);
+}
+
+.ig-icon-wishlist:hover i {
+  color: white;
+}
+
+.ig-icon-message i {
+  color: var(--ig-secondary);
+}
+
+.ig-icon-message:hover {
+  background: linear-gradient(135deg, #405DE6 0%, #5B51D8 100%);
+}
+
+.ig-icon-message:hover i {
+  color: white;
+}
+
+.ig-icon-basket i {
+  color: var(--ig-accent);
+}
+
+.ig-icon-basket:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.ig-icon-basket:hover i {
+  color: white;
+}
+
+/* ============================================
+   Details Button Styling
+   ============================================ */
+.ig-btn-details {
+  background: linear-gradient(135deg, #E1306C 0%, #405DE6 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+}
+
+.ig-btn-details:hover {
+  background: linear-gradient(135deg, #D41E5E 0%, #3A4FD0 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(225, 48, 108, 0.25);
+}
+
+.ig-btn-details:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   Empty State Styling
+   ============================================ */
+.ig-alert-empty {
+  background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+  border: 1.5px dashed var(--ig-border);
+  color: var(--ig-text-light);
+  padding: 40px 20px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+@media (max-width: 768px) {
+  .ig-header-title {
+    font-size: 1.75rem;
+  }
+
+  .btn-ig-basket {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  .ig-filter-card {
+    padding: 16px !important;
+  }
+
+  .ig-product-img {
+    height: 240px;
+  }
+
+  .ig-product-name {
+    font-size: 0.95rem;
+  }
+
+  .ig-price-text {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ig-header-title {
+    font-size: 1.5rem;
+  }
+
+  .container {
+    padding: 0 12px;
+  }
+
+  .ig-product-card {
+    border-radius: 8px;
+  }
+
+  .ig-product-img {
+    height: 200px;
+  }
+
+  .ig-icon-action {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .d-flex.gap-2 {
+    gap: 8px !important;
+  }
+}
+</style>
+
+{% endblock %}

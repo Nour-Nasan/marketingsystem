@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* Custom Instagram-like gradient for the header/accent */
+    .instagram-gradient-text {
+        background: #f09433; 
+        background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+        background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+        background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+    }
+    .instagram-card-shadow {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 3px rgba(255, 255, 255, 0.5) inset;
+    }
+</style>
+
+<div class="bg-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-2">
+                <span class="instagram-gradient-text">Shop Activity Report</span>
+            </h2>
+            <p class="text-lg text-gray-500">
+                Overview of your shop activity
+            </p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+
+            <!-- Orders -->
+            <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition duration-300 border border-gray-100">
+                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-white mb-4 mx-auto">
+                    <i class="fas fa-receipt text-xl"></i>
+                </div>
+                <h4 class="text-xl font-semibold text-gray-800 text-center">
+                    Orders Received
+                </h4>
+                <p class="text-5xl font-bold text-gray-900 mt-3 text-center">
+                    {{ orders_count }}
+                </p>
+            </div>
+
+            <!-- Products -->
+            <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition duration-300 border border-gray-100">
+                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-red-600 text-white mb-4 mx-auto">
+                    <i class="fas fa-box text-xl"></i>
+                </div>
+                <h4 class="text-xl font-semibold text-gray-800 text-center">
+                    Products Listed
+                </h4>
+                <p class="text-5xl font-bold text-gray-900 mt-3 text-center">
+                    {{ products_count }}
+                </p>
+            </div>
+
+            <!-- Visitors -->
+            <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition duration-300 border border-gray-100">
+                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 text-white mb-4 mx-auto">
+                    <i class="fas fa-users text-xl"></i>
+                </div>
+                <h4 class="text-xl font-semibold text-gray-800 text-center">
+                    Store Visitors
+                </h4>
+                <p class="text-5xl font-bold text-gray-900 mt-3 text-center">
+                    {{ visitors_count }}
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Chart Section -->
+        <div class="bg-gray-50 rounded-2xl p-8 shadow-inner border border-gray-100">
+            <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                <span class="instagram-gradient-text">Metrics Trend</span>
+            </h4>
+
+            <div class="relative h-[400px]">
+                <canvas id="reportChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('reportChart').getContext('2d');
+
+    // Define the Instagram-themed colors for the chart
+    const chartColors = {
+        orders: 'rgba(131, 58, 180, 0.8)', // Purple
+        products: 'rgba(225, 48, 108, 0.8)', // Pink/Red
+        visitors: 'rgba(252, 175, 69, 0.8)' // Orange/Yellow
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Orders', 'Products', 'Visitors'],
+            datasets: [{
+                label: 'Store Metrics',
+                data: [
+                    {{ orders_count }},
+                    {{ products_count }},
+                    {{ visitors_count }}
+                ],
+                backgroundColor: [
+                    chartColors.orders,
+                    chartColors.products,
+                    chartColors.visitors
+                ],
+                borderColor: [
+                    chartColors.orders.replace('0.8', '1'),
+                    chartColors.products.replace('0.8', '1'),
+                    chartColors.visitors.replace('0.8', '1')
+                ],
+                borderWidth: 1,
+                borderRadius: 10,
+                barThickness: 70
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {
+                        size: 16
+                    },
+                    bodyFont: {
+                        size: 14
+                    },
+                    padding: 10,
+                    cornerRadius: 5
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        precision: 0,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

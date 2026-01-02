@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  .register-card {
+    max-width: 480px;
+    margin: auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .register-header {
+    background: linear-gradient(
+      45deg,
+      #f58529,
+      #dd2a7b,
+      #8134af,
+      #515bd4
+    );
+    color: white;
+    padding: 22px;
+    text-align: center;
+  }
+
+  .register-body {
+    padding: 30px;
+    background-color: #ffffff;
+  }
+
+  .register-body label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .register-body input,
+  .register-body select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+
+  .register-body input:focus,
+  .register-body select:focus {
+    outline: none;
+    border-color: #dd2a7b;
+    box-shadow: 0 0 0 0.15rem rgba(221, 42, 123, 0.25);
+  }
+
+  .btn-instagram {
+    background: linear-gradient(
+      45deg,
+      #f58529,
+      #dd2a7b,
+      #8134af,
+      #515bd4
+    );
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    font-weight: 600;
+  }
+
+  .btn-instagram:hover {
+    opacity: 0.9;
+    color: white;
+  }
+
+  .register-footer {
+    text-align: center;
+    margin-top: 18px;
+  }
+
+  .register-footer a {
+    color: #dd2a7b;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .register-footer a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="register-card">
+    <!-- Header -->
+    <div class="register-header">
+      <h4 class="mb-1">Create New Account</h4>
+    </div>
+
+    <!-- Body -->
+    <div class="register-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.password1.label_tag }}
+          {{ form.password1 }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.password2.label_tag }}
+          {{ form.password2 }}
+        </div>
+
+        <div class="mb-4">
+          {{ form.role.label_tag }}
+          {{ form.role }}
+        </div>
+
+        <button type="submit" class="btn btn-instagram w-100">
+          Sign Up
+        </button>
+
+        <div class="register-footer">
+          <p class="mb-0 mt-3">
+            Already have an account?
+            <a href="{% url 'users:login' %}">Sign in</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

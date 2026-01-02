@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 fw-bold text-gradient">My Orders</h2>
+
+  {% if orders %}
+  <div class="table-responsive shadow-sm rounded-3 overflow-hidden card-style">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="py-3 px-4">Order ID</th>
+          <th class="py-3 px-4">Status</th>
+          <th class="py-3 px-4">Tracking</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td class="px-4">#{{ order.id }}</td>
+          <td class="px-4">
+            <span class="status-badge status-{{ order.status }}">
+              {{ order.get_status_display }}
+            </span>
+          </td>
+          <td class="px-4">
+            {% if order.status == 'approved' %}
+              <a
+                href="{% url 'orders:order_tracking' order.id %}"
+                class="btn btn-tracking btn-sm"
+              >
+                <i class="bi bi-eye-fill me-1"></i> View Tracking
+              </a>
+            {% else %}
+              <span class="text-muted">Not available</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="alert custom-alert text-center mt-4">
+    <p class="mb-0 fw-bold">You haven't placed any orders yet.</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Styling -->
+<style>
+  /* Instagram Gradient Colors */
+  :root {
+    --ig-blue: #515bd4;
+    --ig-purple: #8134af;
+    --ig-pink: #dd2a7b;
+    --ig-orange: #f58529;
+    --ig-yellow: #feda77;
+    --ig-gradient: linear-gradient(45deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-orange), var(--ig-yellow));
+  }
+
+  /* Apply gradient to text */
+  .text-gradient {
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    font-size: 2.5rem; /* Slightly larger for impact */
+  }
+
+  /* Card-like styling for the table container */
+  .card-style {
+    background-color: #fff;
+    border: 1px solid #eee;
+  }
+
+  /* Custom Alert for No Orders */
+  .custom-alert {
+    background-color: #fcf0fc; /* Very light purple/pink */
+    border: 1px solid #e0b0e0; /* Light purple border */
+    color: var(--ig-purple);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Table Header Styling */
+  .table-light th {
+    background-color: #f8f8f8; /* Light gray for a clean look */
+    color: #444;
+    font-weight: 600;
+    border-bottom: 2px solid var(--ig-pink); /* Subtle highlight */
+  }
+
+  /* Tracking Button Styling */
+  .btn-tracking {
+    color: #fff;
+    background: var(--ig-purple);
+    border: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border-radius: 0.5rem;
+  }
+
+  .btn-tracking:hover {
+    background: var(--ig-pink);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Status Badges (Placeholder for dynamic status colors) */
+  .status-badge {
+    display: inline-block;
+    padding: 0.3em 0.8em;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  /* Example Status Colors - You would need to map these to your Django statuses */
+  .status-approved {
+    background-color: #e6ffed; /* Light Green */
+    color: #00a854; /* Dark Green */
+  }
+  .status-pending {
+    background-color: #fffbe6; /* Light Yellow */
+    color: #ffc107; /* Yellow */
+  }
+  .status-shipped {
+    background-color: #e0f7fa; /* Light Cyan */
+    color: #00bcd4; /* Cyan */
+  }
+  /* Add more status classes as needed */
+
+  /* General table cleanup */
+  .table-hover tbody tr:hover {
+    background-color: #fcfcfc;
+  }
+</style>
+
+<!-- Assuming you have Bootstrap Icons included in your base.html for the eye icon -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> -->
+{% endblock %}

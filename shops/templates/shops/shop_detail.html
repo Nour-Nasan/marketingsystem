@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% block title %}{{ shop.shopName }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <!-- Shop Info Header -->
+  <div class="card shadow-lg mb-5 p-4 rounded-4 shop-header-card">
+    <div class="card-body">
+      <h1 class="fw-bolder mb-2 shop-name-title text-gradient">
+        {{ shop.shopName }}
+      </h1>
+
+      <p class="lead text-muted mb-4 shop-description">
+        {{ shop.shopDescription }}
+      </p>
+
+      <div class="row text-muted small shop-contact-info">
+        <div class="col-md-4 mb-2">
+          <i class="bi bi-geo-alt me-2 info-icon"></i>
+          {{ shop.shopAddress }}
+        </div>
+        <div class="col-md-4 mb-2">
+          <i class="bi bi-telephone me-2 info-icon"></i>
+          {{ shop.shopNumber }}
+        </div>
+        {% if shop.shopEmail %}
+        <div class="col-md-4 mb-2">
+          <i class="bi bi-envelope me-2 info-icon"></i>
+          {{ shop.shopEmail }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Section -->
+  <h3 class="mb-4 products-section-title">
+    <i class="bi bi-grid-3x3-gap-fill me-2"></i> Products from {{ shop.shopName }}
+  </h3>
+
+  <div class="row">
+    {% for product in products %}
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100 shadow-sm product-card">
+        {% if product.productImage %}
+        <img
+          src="{{ product.productImage.url }}"
+          class="card-img-top product-img"
+          alt="{{ product.productName }}"
+        >
+        {% else %}
+        <div class="no-image-placeholder-sm">No Image</div>
+        {% endif %}
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="fw-bold product-name-text">{{ product.productName }}</h5>
+
+          <p class="text-muted small flex-grow-1 product-description-text">
+            {{ product.productDescription|truncatechars:80 }}
+          </p>
+
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="fw-bold price-text">
+              {{ product.productPrice }} SYP
+            </span>
+
+            <a href="{% url 'products:product_detail' product.id %}"
+               class="btn btn-sm btn-view-product">
+              View Product
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="alert custom-alert text-center">
+        <p class="mb-0 fw-bold">This shop has no products yet.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <a href="{% url 'shops:shop_list' %}" class="btn btn-back-to-shops mt-4">
+    ← Back to All Shops
+  </a>
+
+</div>
+
+<!-- Styling -->
+<style>
+  /* Instagram Gradient Colors */
+  :root {
+    --ig-blue: #515bd4;
+    --ig-purple: #8134af;
+    --ig-pink: #dd2a7b;
+    --ig-orange: #f58529;
+    --ig-yellow: #feda77;
+    --ig-gradient: linear-gradient(45deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-orange), var(--ig-yellow));
+    --ig-gradient-short: linear-gradient(to right, var(--ig-purple), var(--ig-pink));
+    --ig-price-color: #00a854; /* Clean green for price */
+  }
+
+  /* Universal Styling */
+  .text-gradient {
+    background: var(--ig-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Shop Header */
+  .shop-header-card {
+    border: none;
+    background-color: #fff;
+    border-bottom: 3px solid var(--ig-pink);
+  }
+  .shop-name-title {
+    font-size: 3rem;
+  }
+  .shop-description {
+    font-size: 1.1rem;
+  }
+  .shop-contact-info {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+  }
+  .info-icon {
+    color: var(--ig-purple);
+    font-size: 1.1rem;
+  }
+
+  /* Products Section Title */
+  .products-section-title {
+    color: var(--ig-purple);
+    font-weight: 700;
+  }
+
+  /* Product Card */
+  .product-card {
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0.75rem;
+  }
+  .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .product-img {
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+  }
+
+  .no-image-placeholder-sm {
+    height: 220px;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-weight: 600;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+  }
+
+  .product-name-text {
+    color: #333;
+  }
+
+  .product-description-text {
+    font-size: 0.85rem;
+  }
+
+  .price-text {
+    color: var(--ig-price-color);
+    font-size: 1.1rem;
+  }
+
+  /* View Product Button */
+  .btn-view-product {
+    background: var(--ig-gradient-short);
+    color: white;
+    font-weight: 500;
+    border: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-view-product:hover {
+    opacity: 0.9;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  /* Back Button */
+  .btn-back-to-shops {
+    background-color: #f0f0f0;
+    color: #6c757d;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-back-to-shops:hover {
+    background-color: #e0e0e0;
+    color: #495057;
+  }
+
+  /* Custom Alert for No Products (reused from previous templates) */
+  .custom-alert {
+    background-color: #fcf0fc; /* Very light purple/pink */
+    border: 1px solid #e0b0e0; /* Light purple border */
+    color: var(--ig-purple);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+</style>
+{% endblock %}
