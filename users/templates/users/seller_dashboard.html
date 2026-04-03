@@ -224,6 +224,18 @@
                         <span>My Report</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{% url 'users:profile' %}">
+                        <i class="fas fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'users:edit_profile' %}">
+                        <i class="fas fa-user-gear"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                </li>
             </ul>
             <div class="sidebar-logout">
                 <a href="{% url 'users:logout' %}">

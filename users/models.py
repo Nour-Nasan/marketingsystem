@@ -16,6 +16,25 @@ class CustomUser(AbstractUser):
         verbose_name=_('Role'),
         help_text=_('Defines the role of the user in the system.')
     )
+
+    phone_number = models.CharField(
+        max_length=32,
+        blank=True,
+        null=True,
+        verbose_name=_('Phone number'),
+    )
+    location = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_('Location'),
+    )
+    profile_image = models.ImageField(
+        upload_to='profile_images/',
+        blank=True,
+        null=True,
+        verbose_name=_('Profile image'),
+    )
     
     REQUIRED_FIELDS = ['email', 'role']  
 

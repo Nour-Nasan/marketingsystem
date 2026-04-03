@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .decorators import admin_required, buyer_required, seller_required
-from .forms import RegisterForm
+from .forms import RegisterForm, ProfileUpdateForm
 from shops.models import Shop
 from shops.forms import ShopForm
 from django.utils import timezone
@@ -47,6 +47,27 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('users:login')
+
+
+# ------------------ Account profile ------------------
+
+@login_required
+def profile_view(request):
+    return render(request, 'users/profile.html')
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم تحديث بيانات الحساب.')
+            return redirect('users:profile')
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+
+    return render(request, 'users/edit_profile.html', {'form': form})
 
 
 # ------------------ Redirect After Login ------------------

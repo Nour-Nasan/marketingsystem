@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal Info', {'fields': ('email', 'first_name', 'last_name')}),
+        ('Personal Info', {'fields': ('email', 'first_name', 'last_name', 'phone_number', 'location', 'profile_image')}),
         ('Role and Permissions', {'fields': ('role', 'is_staff', 'is_active')}),
     )
     
