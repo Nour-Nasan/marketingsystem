@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  .profile-card {
+    max-width: 520px;
+    margin: auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  .profile-header {
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    color: white;
+    padding: 22px;
+    text-align: center;
+  }
+  .profile-body {
+    padding: 30px;
+    background-color: #ffffff;
+  }
+  .profile-body dt {
+    font-weight: 600;
+    color: #555;
+  }
+  .profile-body dd {
+    margin-bottom: 0.75rem;
+  }
+  .profile-avatar {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  .btn-instagram {
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-instagram:hover {
+    opacity: 0.9;
+    color: white;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="profile-card">
+    <div class="profile-header">
+      <h4 class="mb-2">My account</h4>
+      {% if user.profile_image %}
+        <img
+          src="{{ user.profile_image.url }}"
+          alt="Profile"
+          class="profile-avatar"
+        />
+      {% endif %}
+    </div>
+    <div class="profile-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-4">Username</dt>
+        <dd class="col-sm-8">{{ user.username }}</dd>
+
+        <dt class="col-sm-4">Email</dt>
+        <dd class="col-sm-8">{{ user.email|default:"—" }}</dd>
+
+        <dt class="col-sm-4">Phone</dt>
+        <dd class="col-sm-8">{{ user.phone_number|default:"—" }}</dd>
+
+        <dt class="col-sm-4">Location</dt>
+        <dd class="col-sm-8">{{ user.location|default:"—" }}</dd>
+
+        <dt class="col-sm-4">Role</dt>
+        <dd class="col-sm-8">{{ user.get_role_display }}</dd>
+      </dl>
+
+      <div class="mt-4 text-center">
+        <a href="{% url 'users:edit_profile' %}" class="btn-instagram">Edit profile</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  .edit-profile-card {
+    max-width: 520px;
+    margin: auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  .edit-profile-header {
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    color: white;
+    padding: 22px;
+    text-align: center;
+  }
+  .edit-profile-body {
+    padding: 30px;
+    background-color: #ffffff;
+  }
+  .edit-profile-body label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .edit-profile-body input[type="email"],
+  .edit-profile-body input[type="text"],
+  .edit-profile-body input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  .edit-profile-body input:focus {
+    outline: none;
+    border-color: #dd2a7b;
+    box-shadow: 0 0 0 0.15rem rgba(221, 42, 123, 0.25);
+  }
+  .btn-instagram {
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    font-weight: 600;
+    width: 100%;
+  }
+  .btn-instagram:hover {
+    opacity: 0.9;
+    color: white;
+  }
+  .back-link {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .back-link a {
+    color: #dd2a7b;
+    font-weight: 500;
+    text-decoration: none;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="edit-profile-card">
+    <div class="edit-profile-header">
+      <h4 class="mb-0">Edit account</h4>
+    </div>
+    <div class="edit-profile-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <div class="text-danger small">{{ form.email.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.phone_number.id_for_label }}">Phone number</label>
+          {{ form.phone_number }}
+          {% if form.phone_number.errors %}
+            <div class="text-danger small">{{ form.phone_number.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.location.id_for_label }}">Location</label>
+          {{ form.location }}
+          {% if form.location.errors %}
+            <div class="text-danger small">{{ form.location.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-4">
+          <label for="{{ form.profile_image.id_for_label }}">Profile image</label>
+          {{ form.profile_image }}
+          {% if form.profile_image.errors %}
+            <div class="text-danger small">{{ form.profile_image.errors }}</div>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-instagram">Save changes</button>
+
+        <div class="back-link">
+          <a href="{% url 'users:profile' %}">Back to profile</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
