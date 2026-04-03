@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .decorators import admin_required, buyer_required, seller_required
+from .decorators import admin_required, buyer_required, seller_required, bazar_organizer_required
 from .forms import RegisterForm, ProfileUpdateForm
 from shops.models import Shop
 from shops.forms import ShopForm
@@ -16,17 +16,20 @@ from advertisement.models import Advertisement
 def home(request):
     return render(request, 'users/home.html')
 
-
 def register_view(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            print("USER CREATED:", user.username, user.role)
             return redirect('users:login')
+        else:
+            print("FORM ERRORS:", form.errors)
     else:
         form = RegisterForm()
 
     return render(request, 'users/register.html', {'form': form})
+
 
 
 def login_view(request):
@@ -80,6 +83,8 @@ def redirect_after_login(request):
         return redirect('users:buyer_dashboard')
     elif request.user.is_seller():
         return redirect('users:seller_dashboard')
+    elif request.user.is_bazar_organizer():
+        return redirect('users:bazar_organizer_dashboard')
     else:
         return redirect('users:login')
 
@@ -100,6 +105,11 @@ def buyer_dashboard(request):
 @seller_required
 def seller_dashboard(request):
     return render(request, 'users/seller_dashboard.html')
+
+
+@bazar_organizer_required
+def bazar_organizer_dashboard(request):
+    return render(request, 'users/bazar_organizer_dashboard.html')
 
 
 # ------------------ Admin Shop Management ------------------

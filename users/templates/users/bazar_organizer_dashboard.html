@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bazar Organizer Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .top-bar {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 0.85rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .top-bar-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 0.9rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            line-height: 1;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid #e5e7eb;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        .sidebar-logout a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+
+        .sidebar-logout a:hover {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-item-active {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white !important;
+        }
+
+        .quick-action-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .placeholder-link {
+            color: #9ca3af;
+            cursor: default;
+        }
+
+        .placeholder-link:hover {
+            background-color: #f9fafb;
+            color: #9ca3af;
+        }
+
+        .sidebar-card {
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 1rem;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.95rem 1rem;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: #f9fafb;
+            color: #f58529;
+            padding-left: 1.25rem;
+        }
+
+        .welcome-card {
+            background: linear-gradient(
+                135deg,
+                rgba(245, 133, 41, 0.05),
+                rgba(236, 72, 153, 0.05),
+                rgba(168, 85, 247, 0.05)
+            );
+            border-left: 4px solid;
+            border-image: linear-gradient(135deg, #f58529, #ec4899, #a855f7) 1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+<div class="p-4 lg:p-6 max-w-7xl mx-auto">
+    <div class="top-bar">
+        <div class="top-bar-title">Marketing System</div>
+        <a href="{% url 'users:logout' %}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</div>
+
+<div class="flex flex-col lg:flex-row gap-5 p-4 lg:p-6 max-w-7xl mx-auto">
+
+    <aside class="w-full lg:w-72 flex flex-col">
+        <div class="sidebar-card overflow-hidden flex flex-col flex-1 bg-white">
+            <div class="sidebar-header">Bazar Organizer</div>
+            <ul class="sidebar-nav flex-1">
+                <li>
+                    <a href="{% url 'users:bazar_organizer_dashboard' %}" class="nav-item-active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="placeholder-link" aria-disabled="true">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add Bazaar <small class="text-gray-400">(soon)</small></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="placeholder-link" aria-disabled="true">
+                        <i class="fas fa-store"></i>
+                        <span>My Bazaars <small class="text-gray-400">(soon)</small></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="placeholder-link" aria-disabled="true">
+                        <i class="fas fa-inbox"></i>
+                        <span>Booking Requests <small class="text-gray-400">(soon)</small></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'users:profile' %}">
+                        <i class="fas fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'users:edit_profile' %}">
+                        <i class="fas fa-user-gear"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-logout">
+                <a href="{% url 'users:logout' %}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 min-w-0">
+        <div class="welcome-card rounded-lg p-4 mb-4">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">
+                Welcome, <span class="gradient-text">{{ request.user.username }}</span>
+            </h3>
+            <p class="text-gray-600 text-sm">
+                Organizer tools will appear here in a later phase. For now, use the sidebar placeholders or manage your account via Profile.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="quick-action-card bg-white rounded-lg p-6 text-center">
+                <i class="fas fa-plus-circle text-3xl text-gray-400 mb-3"></i>
+                <h4 class="font-semibold text-gray-800 mb-1">Add Bazaar</h4>
+                <p class="text-gray-500 text-sm mb-3">Coming soon</p>
+                <span class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed">Not available yet</span>
+            </div>
+            <div class="quick-action-card bg-white rounded-lg p-6 text-center">
+                <i class="fas fa-store text-3xl text-gray-400 mb-3"></i>
+                <h4 class="font-semibold text-gray-800 mb-1">My Bazaars</h4>
+                <p class="text-gray-500 text-sm mb-3">Coming soon</p>
+                <span class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed">Not available yet</span>
+            </div>
+            <div class="quick-action-card bg-white rounded-lg p-6 text-center">
+                <i class="fas fa-inbox text-3xl text-gray-400 mb-3"></i>
+                <h4 class="font-semibold text-gray-800 mb-1">Booking Requests</h4>
+                <p class="text-gray-500 text-sm mb-3">Coming soon</p>
+                <span class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed">Not available yet</span>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const path = window.location.pathname;
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            if (link.classList.contains('placeholder-link')) return;
+            link.classList.remove('nav-item-active');
+            const href = link.getAttribute('href');
+            if (href && href !== '#' && href === path) {
+                link.classList.add('nav-item-active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

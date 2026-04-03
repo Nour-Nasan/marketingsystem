@@ -17,3 +17,4 @@ def role_required(role):
 admin_required = role_required('admin')
 seller_required = role_required('seller')
 buyer_required = role_required('buyer')
+bazar_organizer_required = role_required('bazar_organizer')

@@ -34,9 +34,14 @@ class CustomUserCreationForm(UserCreationForm):
         }
 
 
+
 class RegisterForm(UserCreationForm):
     role = forms.ChoiceField(
-        choices=[('buyer', 'Buyer'), ('seller', 'Seller')],
+        choices=[
+            ('buyer', 'Buyer'),
+            ('seller', 'Seller'),
+            ('bazar_organizer', 'Bazar organizer'),
+        ],
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
 
@@ -59,3 +64,13 @@ class RegisterForm(UserCreationForm):
             'password1': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'كلمة المرور'}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'تأكيد كلمة المرور'}),
         }
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = self.cleaned_data['role']
+        user.email = self.cleaned_data['email']
+        user.phone_number = self.cleaned_data['phone_number']
+        user.location = self.cleaned_data['location']
+        if commit:
+            user.save()
+        return user

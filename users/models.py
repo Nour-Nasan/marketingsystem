@@ -7,10 +7,11 @@ class CustomUser(AbstractUser):
         ('admin', _('Admin')),       
         ('buyer', _('Buyer')),
         ('seller',_('Seller')),
+        ('bazar_organizer', _('Bazar organizer')),
     ]
     
     role = models.CharField(
-        max_length=10,
+        max_length=20,
         choices=ROLE_CHOICES,
         default='buyer',
         verbose_name=_('Role'),
@@ -50,6 +51,9 @@ class CustomUser(AbstractUser):
 
     def is_seller(self):
         return self.role == 'seller'
+
+    def is_bazar_organizer(self):
+        return self.role == 'bazar_organizer'
     
     def __str__(self):
         return f"{self.username} ({self.get_role_display()})"

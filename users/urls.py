@@ -14,6 +14,7 @@ urlpatterns = [
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('buyer-dashboard/', views.buyer_dashboard, name='buyer_dashboard'),
     path('seller-dashboard/', views.seller_dashboard, name='seller_dashboard'),
+    path('bazar-organizer-dashboard/', views.bazar_organizer_dashboard, name='bazar_organizer_dashboard'),
     path('error-403/', views.error_403, name='error_403'),
         # ------------------ Admin Views ------------------
     path('admin-dashboard/add-shop/', views.add_shop_admin, name='add_shop_admin'),
