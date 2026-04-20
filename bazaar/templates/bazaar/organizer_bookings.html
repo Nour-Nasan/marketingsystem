@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Requests</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .top-bar {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 0.85rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .btn-approve {
+            background: #16a34a;
+            color: white;
+            font-weight: 700;
+            padding: 0.45rem 0.9rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-approve:hover { background: #15803d; }
+        .btn-reject {
+            background: #dc2626;
+            color: white;
+            font-weight: 700;
+            padding: 0.45rem 0.9rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-reject:hover { background: #b91c1c; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            color: #374151;
+        }
+        .badge-pending { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+        .badge-approved { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+        .badge-rejected { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+        .badge-cancelled { background: #f3f4f6; border-color: #e5e7eb; color: #374151; }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div class="p-4 lg:p-6 max-w-7xl mx-auto">
+    <div class="top-bar">
+        <div class="font-bold text-lg">Booking Requests</div>
+        <div class="flex flex-wrap gap-2 justify-end">
+            <a href="{% url 'users:bazar_organizer_dashboard' %}" class="text-white/90 hover:text-white text-sm font-semibold">Dashboard</a>
+            <a href="{% url 'bazaar:my_bazaars' %}" class="text-white/90 hover:text-white text-sm font-semibold">My Bazaars</a>
+        </div>
+    </div>
+
+    {% if messages %}
+        <div class="space-y-2 mb-4">
+            {% for message in messages %}
+                <div class="rounded-lg px-4 py-3 text-sm border
+                    {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-800{% endif %}
+                    {% if message.tags == 'info' %}bg-blue-50 border-blue-200 text-blue-800{% endif %}
+                    {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800{% endif %}
+                    {% if message.tags == 'warning' %}bg-yellow-50 border-yellow-200 text-yellow-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if bookings %}
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr class="text-left text-gray-600">
+                        <th class="px-4 py-3 font-semibold">Bazaar</th>
+                        <th class="px-4 py-3 font-semibold">Seller</th>
+                        <th class="px-4 py-3 font-semibold">Status</th>
+                        <th class="px-4 py-3 font-semibold text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                    {% for bk in bookings %}
+                        <tr>
+                            <td class="px-4 py-3">
+                                <div class="font-semibold text-gray-900">{{ bk.bazaar.title }}</div>
+                                <div class="text-xs text-gray-500">{{ bk.bazaar.start_datetime|date:"M j, Y H:i" }}</div>
+                            </td>
+                            <td class="px-4 py-3 text-gray-800">{{ bk.seller }}</td>
+                            <td class="px-4 py-3">
+                                <span class="badge badge-{{ bk.status }}">{{ bk.status|capfirst }}</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                {% if bk.status == 'pending' %}
+                                    <div class="flex justify-end gap-2">
+                                        <form method="post" action="{% url 'bazaar:approve_booking' bk.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-approve">
+                                                <i class="fas fa-check"></i> Approve
+                                            </button>
+                                        </form>
+                                        <form method="post" action="{% url 'bazaar:reject_booking' bk.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-reject">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <div class="text-right text-xs text-gray-400 font-semibold">
+                                        No actions
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="bg-white rounded-xl border border-dashed border-gray-300 p-10 text-center">
+            <i class="fas fa-inbox text-4xl text-gray-300 mb-3"></i>
+            <p class="text-gray-600">No booking requests yet.</p>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
+

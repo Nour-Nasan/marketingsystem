@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bazaar Bookings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .top-bar {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 0.85rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 133, 41, 0.35);
+            color: white;
+        }
+        .btn-cancel {
+            background: #dc2626;
+            color: white;
+            font-weight: 700;
+            padding: 0.45rem 0.9rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-cancel:hover { background: #b91c1c; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            color: #374151;
+        }
+        .badge-pending { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+        .badge-approved { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+        .badge-rejected { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+        .badge-cancelled { background: #f3f4f6; border-color: #e5e7eb; color: #374151; }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div class="p-4 lg:p-6 max-w-7xl mx-auto">
+    <div class="top-bar">
+        <div class="font-bold text-lg">My Bazaar Bookings</div>
+        <div class="flex flex-wrap gap-2 justify-end">
+            <a href="{% url 'bazaar:browse_bazaars' %}" class="text-white/90 hover:text-white text-sm font-semibold">Browse</a>
+            <a href="{% url 'users:seller_dashboard' %}" class="text-white/90 hover:text-white text-sm font-semibold">Dashboard</a>
+        </div>
+    </div>
+
+    {% if messages %}
+        <div class="space-y-2 mb-4">
+            {% for message in messages %}
+                <div class="rounded-lg px-4 py-3 text-sm border
+                    {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-800{% endif %}
+                    {% if message.tags == 'info' %}bg-blue-50 border-blue-200 text-blue-800{% endif %}
+                    {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800{% endif %}
+                    {% if message.tags == 'warning' %}bg-yellow-50 border-yellow-200 text-yellow-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if bookings %}
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {% for bk in bookings %}
+                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div class="aspect-video bg-gray-100 overflow-hidden">
+                        {% if bk.bazaar.main_image %}
+                            <img src="{{ bk.bazaar.main_image.url }}" alt="{{ bk.bazaar.title }}" class="w-full h-full object-cover">
+                        {% endif %}
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <h2 class="text-lg font-bold text-gray-900">{{ bk.bazaar.title }}</h2>
+                            <span class="badge badge-{{ bk.status }}">{{ bk.status|capfirst }}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2 flex items-start gap-2">
+                            <i class="fas fa-map-marker-alt text-orange-500 mt-0.5"></i>
+                            <span>{{ bk.bazaar.location }}</span>
+                        </p>
+
+                        <dl class="text-sm text-gray-700 space-y-1 mt-3 mb-4">
+                            <div class="flex justify-between gap-2">
+                                <dt class="text-gray-500">Starts</dt>
+                                <dd>{{ bk.bazaar.start_datetime|date:"M j, Y H:i" }}</dd>
+                            </div>
+                            <div class="flex justify-between gap-2">
+                                <dt class="text-gray-500">Ends</dt>
+                                <dd>{{ bk.bazaar.end_datetime|date:"M j, Y H:i" }}</dd>
+                            </div>
+                            <div class="flex justify-between gap-2 font-semibold text-gray-900">
+                                <dt>Table price</dt>
+                                <dd>{{ bk.bazaar.table_price }}</dd>
+                            </div>
+                        </dl>
+
+                        <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
+                            <a href="{% url 'bazaar:bazaar_detail' bk.bazaar.pk %}" class="btn-gradient flex-1 justify-center min-w-[140px]">
+                                <i class="fas fa-eye"></i> Bazaar Details
+                            </a>
+
+                            {% if bk.status != 'cancelled' and bk.bazaar.start_datetime > now %}
+                                <form method="post" action="{% url 'bazaar:cancel_booking' bk.pk %}" class="flex-1 min-w-[140px]">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cancel w-full justify-center">
+                                        <i class="fas fa-ban"></i> Cancel Booking
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-xl border border-dashed border-gray-300 p-10 text-center">
+            <i class="fas fa-ticket text-4xl text-gray-300 mb-3"></i>
+            <p class="text-gray-600 mb-4">You don’t have any bazaar bookings yet.</p>
+            <a href="{% url 'bazaar:browse_bazaars' %}" class="btn-gradient inline-flex">
+                <i class="fas fa-store"></i> Browse Bazaars
+            </a>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
+
