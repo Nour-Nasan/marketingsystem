@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        .sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-nav li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
         .top-bar {
             background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
             color: white;
@@ -209,6 +220,18 @@
                     <a href="{% url 'offers:my_offers' %}">
                         <i class="fas fa-percentage"></i>
                         <span>Flash Offers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'bazaar:browse_bazaars' %}">
+                        <i class="fas fa-store"></i>
+                        <span>Browse Bazaars</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'bazaar:my_bookings' %}">
+                        <i class="fas fa-ticket"></i>
+                        <span>My Bazaar Bookings</span>
                     </a>
                 </li>
                 <li>

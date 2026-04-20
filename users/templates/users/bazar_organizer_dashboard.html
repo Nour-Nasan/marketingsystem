@@ -113,7 +113,17 @@
             text-align: center;
             border-radius: 0.75rem 0.75rem 0 0;
         }
+        .sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 
+.sidebar-nav li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
         .sidebar-nav a {
             display: flex;
             align-items: center;
@@ -179,9 +189,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="placeholder-link" aria-disabled="true">
+                    <a href="{% url 'bazaar:organizer_bookings' %}">
                         <i class="fas fa-inbox"></i>
-                        <span>Booking Requests <small class="text-gray-400">(soon)</small></span>
+                        <span>Booking Requests</span>
                     </a>
                 </li>
                 <li>
@@ -212,7 +222,7 @@
                 Welcome, <span class="gradient-text">{{ request.user.username }}</span>
             </h3>
             <p class="text-gray-600 text-sm">
-                Create and manage your bazaars from the sidebar, or use the quick actions below. Booking requests will be available in a later phase.
+                Create and manage your bazaars from the sidebar, or use the quick actions below.
             </p>
         </div>
 
@@ -229,12 +239,12 @@
                 <p class="text-gray-500 text-sm mb-3">View and edit your bazaars</p>
                 <span class="inline-block px-4 py-2 rounded-lg text-white text-sm font-medium" style="background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);">Open</span>
             </a>
-            <div class="quick-action-card bg-white rounded-lg p-6 text-center">
-                <i class="fas fa-inbox text-3xl text-gray-400 mb-3"></i>
+            <a href="{% url 'bazaar:organizer_bookings' %}" class="quick-action-card bg-white rounded-lg p-6 text-center block no-underline text-inherit">
+                <i class="fas fa-inbox text-3xl mb-3" style="background: linear-gradient(135deg, #f58529, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                 <h4 class="font-semibold text-gray-800 mb-1">Booking Requests</h4>
-                <p class="text-gray-500 text-sm mb-3">Coming soon</p>
-                <span class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed">Not available yet</span>
-            </div>
+                <p class="text-gray-500 text-sm mb-3">View and manage booking requests</p>
+                <span class="inline-block px-4 py-2 rounded-lg text-white text-sm font-medium" style="background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);">Open</span>
+            </a>
         </div>
     </main>
 </div>
