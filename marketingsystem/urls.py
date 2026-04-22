@@ -12,7 +12,6 @@ urlpatterns = [
     path("", include('users.urls')),
 
     # مسارات التطبيقات
-    path('users/', include('users.urls')),
     path('shops/', include('shops.urls')),
     path('products/', include('products.urls')),
     path('orders/', include('orders.urls')),

@@ -27,7 +27,6 @@ def call_groq(prompt: str) -> str:
 
     response = requests.post(GROQ_URL, headers=headers, json=payload, timeout=30)
 
-    # هذا مهم لنعرف الخطأ الحقيقي لو رجع
     if response.status_code != 200:
         raise RuntimeError(response.text)
 
