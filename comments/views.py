@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from orders.models import OrderItem
 from products.models import Product
+from notifications.models import Notification
 from .models import Comment
 from .forms import CommentForm
 from orders.models import OrderTracking
@@ -51,6 +53,17 @@ def add_comment(request, product_id):
             comment.product = product
             comment.parent = None  
             comment.save()
+
+            seller_user = product.shop.owner
+            if seller_user != request.user:
+                Notification.objects.create(
+                    recipient=seller_user,
+                    sender=request.user,
+                    title='New Product Comment',
+                    message=f'You have a new comment on your product "{product.productName}".',
+                    notification_type='new_product_comment',
+                    url=reverse('products:product_detail', args=[product.id]),
+                )
             return redirect('products:product_detail', product_id=product.id)
     else:
         form = CommentForm()
@@ -84,5 +97,29 @@ def add_reply(request, comment_id):
             reply.product = product
             reply.parent = parent_comment
             reply.save()
+
+            seller_user = product.shop.owner
+            if seller_user != request.user:
+                Notification.objects.create(
+                    recipient=seller_user,
+                    sender=request.user,
+                    title='New Reply on Product Comment',
+                    message=f'You have a new reply on comments for your product "{product.productName}".',
+                    notification_type='product_comment_reply',
+                    url=reverse('products:product_detail', args=[product.id]),
+                )
+
+            if (
+                parent_comment.user != request.user
+                and getattr(parent_comment.user, 'role', None) == 'buyer'
+            ):
+                Notification.objects.create(
+                    recipient=parent_comment.user,
+                    sender=request.user,
+                    title='Reply to Your Comment',
+                    message=f'Someone replied to your comment on "{product.productName}".',
+                    notification_type='reply_to_comment',
+                    url=reverse('products:product_detail', args=[product.id]),
+                )
 
     return redirect('products:product_detail', product_id=product.id)
