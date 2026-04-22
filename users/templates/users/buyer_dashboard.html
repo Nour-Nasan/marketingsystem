@@ -363,6 +363,17 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{% url 'notifications:notification_list' %}">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                            {% if notifications_unread_count > 0 %}
+                                <span class="ml-auto inline-flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-semibold px-2 py-0.5">
+                                    {% if notifications_unread_count > 99 %}99+{% else %}{{ notifications_unread_count }}{% endif %}
+                                </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
                         <a href="{% url 'baskets:view_basket' %}">
                             <i class="fas fa-shopping-cart"></i>
                             <span>Shopping Basket</span>

@@ -28,8 +28,8 @@
   }
 
   .notification-item.unread {
-    background-color: #fff8ef;
-    border-left: 5px solid #f58529;
+    background-color: #fcf4fb;
+    border-left: 5px solid #d95aa2;
   }
 
   .notification-item.read {
@@ -71,6 +71,29 @@
     background-color: #f1f3f5;
     color: #343a40;
   }
+
+  .btn-mark-all {
+    background: linear-gradient(135deg, #f58529 0%, #dd2a7b 55%, #8134af 100%);
+    border: 0;
+    color: #fff;
+  }
+
+  .btn-mark-all:hover {
+    color: #fff;
+    opacity: 0.95;
+  }
+
+  .btn-mark-read {
+    background-color: #c84a8f;
+    border-color: #c84a8f;
+    color: #fff;
+  }
+
+  .btn-mark-read:hover {
+    background-color: #b13f7d;
+    border-color: #b13f7d;
+    color: #fff;
+  }
 </style>
 
 <div class="notifications-page py-2 py-md-3">
@@ -80,7 +103,7 @@
   </div>
 
   <div class="d-flex justify-content-end mb-3">
-    <a href="{% url 'notifications:mark_all_notifications_read' %}" class="btn btn-dark btn-sm">
+    <a href="{% url 'notifications:mark_all_notifications_read' %}" class="btn btn-sm btn-mark-all">
       <i class="bi bi-check2-all me-1"></i>
       Mark All as Read
     </a>
@@ -130,7 +153,7 @@
           {% endif %}
 
           {% if not notification.is_read %}
-            <a href="{% url 'notifications:mark_notification_read' notification.id %}" class="btn btn-primary btn-sm">
+            <a href="{% url 'notifications:mark_notification_read' notification.id %}" class="btn btn-sm btn-mark-read">
               <i class="bi bi-check2 me-1"></i>Mark as Read
             </a>
           {% endif %}

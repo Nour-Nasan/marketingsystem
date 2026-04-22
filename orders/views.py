@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from baskets.models import Basket
+from notifications.models import Notification
 from .forms import OrderOptionsForm
 from users.decorators import buyer_required, seller_required
 from .models import Order, OrderItem, OrderTracking
@@ -41,11 +43,30 @@ def approve_order(request, order_id):
     )
 
     if request.method == 'POST':
+        if order.status == 'approved':
+            return redirect('orders:order_details', order_id=order.id)
+
         order.approve()
 
         OrderTracking.objects.create(
             order=order,
             status='preparing'
+        )
+        Notification.objects.create(
+            recipient=order.buyer,
+            sender=request.user,
+            title='Order Approved',
+            message=f'Your order #{order.id} has been approved.',
+            notification_type='order_approved',
+            url=reverse('orders:my_orders'),
+        )
+        Notification.objects.create(
+            recipient=order.buyer,
+            sender=request.user,
+            title='Order Status Updated',
+            message=f'Order #{order.id} status updated to preparing.',
+            notification_type='order_status_updated',
+            url=reverse('orders:my_orders'),
         )
 
         return redirect('orders:order_details', order_id=order.id)
@@ -78,9 +99,21 @@ def update_order_tracking(request, order_id):
     next_status = TRACKING_FLOW[current_index + 1]
 
     if request.method == 'POST':
+        latest_tracking = order.tracking_steps.order_by('-updated_at').first()
+        if latest_tracking and latest_tracking.status == next_status:
+            return redirect('orders:order_details', order_id=order.id)
+
         OrderTracking.objects.create(
             order=order,
             status=next_status
+        )
+        Notification.objects.create(
+            recipient=order.buyer,
+            sender=request.user,
+            title='Order Status Updated',
+            message=f'Order #{order.id} status updated to {next_status}.',
+            notification_type='order_status_updated',
+            url=reverse('orders:my_orders'),
         )
 
         if next_status == 'delivered':
@@ -107,7 +140,18 @@ def reject_order(request, order_id):
     )
 
     if request.method == 'POST':
+        if order.status == 'rejected':
+            return redirect('orders:view_orders')
+
         order.reject()
+        Notification.objects.create(
+            recipient=order.buyer,
+            sender=request.user,
+            title='Order Rejected',
+            message=f'Your order #{order.id} has been rejected.',
+            notification_type='order_rejected',
+            url=reverse('orders:my_orders'),
+        )
         return redirect('orders:view_orders')
 
     return render(request, 'orders/reject_order.html', {'order': order})
