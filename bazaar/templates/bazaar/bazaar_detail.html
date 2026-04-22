@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ bazaar.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .top-bar {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            padding: 0.85rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #f58529 0%, #ec4899 50%, #a855f7 100%);
+            color: white;
+            font-weight: 600;
+            padding: 0.55rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 133, 41, 0.35);
+            color: white;
+        }
+        .btn-outline {
+            border: 2px solid #e5e7eb;
+            color: #374151;
+            font-weight: 600;
+            padding: 0.55rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-outline:hover {
+            border-color: #f58529;
+            color: #f58529;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div class="p-4 lg:p-6 max-w-5xl mx-auto">
+    <div class="top-bar">
+        <div class="font-bold text-lg">Bazaar Details</div>
+        <div class="flex flex-wrap gap-3 justify-end">
+            <a href="{% url 'bazaar:browse_bazaars' %}" class="text-white/90 hover:text-white text-sm font-semibold">Browse</a>
+            <a href="{% url 'users:seller_dashboard' %}" class="text-white/90 hover:text-white text-sm font-semibold">Dashboard</a>
+        </div>
+    </div>
+
+    {% if messages %}
+        <div class="space-y-2 mb-4">
+            {% for message in messages %}
+                <div class="rounded-lg px-4 py-3 text-sm border
+                    {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-800{% endif %}
+                    {% if message.tags == 'info' %}bg-blue-50 border-blue-200 text-blue-800{% endif %}
+                    {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800{% endif %}
+                    {% if message.tags == 'warning' %}bg-yellow-50 border-yellow-200 text-yellow-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+        <div class="aspect-video bg-gray-100 overflow-hidden">
+            {% if bazaar.main_image %}
+                <img src="{{ bazaar.main_image.url }}" alt="{{ bazaar.title }}" class="w-full h-full object-cover">
+            {% endif %}
+        </div>
+
+        <div class="p-5">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">{{ bazaar.title }}</h1>
+                    <p class="text-gray-600 mt-1">{{ bazaar.description }}</p>
+                </div>
+                <div class="shrink-0 flex flex-wrap gap-2">
+                    <a href="{% url 'bazaar:confirm_booking' bazaar.pk %}" class="btn-gradient">
+                        <i class="fas fa-ticket"></i>
+                        Confirm Booking
+                    </a>
+                    <a href="{% url 'bazaar:my_bookings' %}" class="btn-outline">
+                        <i class="fas fa-list"></i>
+                        My Bookings
+                    </a>
+                </div>
+            </div>
+
+            <div class="rounded-lg border border-gray-200 p-4">
+                <h3 class="font-semibold text-gray-900 mb-3">Info</h3>
+                <dl class="text-sm text-gray-700 space-y-2">
+                    <div class="flex justify-between gap-3">
+                        <dt class="text-gray-500">Location</dt>
+                        <dd class="text-right">{{ bazaar.location }}</dd>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                        <dt class="text-gray-500">Start</dt>
+                        <dd class="text-right">{{ bazaar.start_datetime|date:"M j, Y H:i" }}</dd>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                        <dt class="text-gray-500">End</dt>
+                        <dd class="text-right">{{ bazaar.end_datetime|date:"M j, Y H:i" }}</dd>
+                    </div>
+                    <div class="flex justify-between gap-3 font-semibold text-gray-900">
+                        <dt>Table price</dt>
+                        <dd class="text-right">{{ bazaar.table_price }}</dd>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                        <dt class="text-gray-500">Organizer</dt>
+                        <dd class="text-right">{{ bazaar.organizer }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
