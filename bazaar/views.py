@@ -1,8 +1,10 @@
 from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 
+from notifications.models import Notification
 from users.decorators import bazar_organizer_required, seller_required
 
 from .forms import BazaarForm
@@ -91,10 +93,18 @@ def confirm_booking(request, bazaar_id):
 
         try:
             with transaction.atomic():
-                BazaarBooking.objects.create(
+                booking = BazaarBooking.objects.create(
                     seller=request.user,
                     bazaar=bazaar,
                     status='pending',
+                )
+                Notification.objects.create(
+                    recipient=bazaar.organizer,
+                    sender=request.user,
+                    title='New Bazaar Booking Request',
+                    message=f'{request.user.username} requested booking for bazaar "{bazaar.title}".',
+                    notification_type='bazaar_booking_request',
+                    url=reverse('bazaar:organizer_bookings'),
                 )
         except IntegrityError:
             messages.info(request, 'You already have a booking request for this bazaar.')
@@ -147,6 +157,14 @@ def cancel_booking(request, booking_id):
 
     booking.status = 'cancelled'
     booking.save(update_fields=['status'])
+    Notification.objects.create(
+        recipient=booking.bazaar.organizer,
+        sender=request.user,
+        title='Bazaar Booking Cancelled',
+        message=f'{request.user.username} cancelled booking for bazaar "{booking.bazaar.title}".',
+        notification_type='bazaar_booking_cancelled',
+        url=reverse('bazaar:organizer_bookings'),
+    )
     messages.success(request, 'Booking cancelled.')
     return redirect('bazaar:my_bookings')
 
@@ -182,6 +200,24 @@ def update_booking_status(request, booking_id, status):
 
     booking.status = status
     booking.save(update_fields=['status'])
+    if status == 'approved':
+        Notification.objects.create(
+            recipient=booking.seller,
+            sender=request.user,
+            title='Bazaar Booking Approved',
+            message=f'Your booking for bazaar "{booking.bazaar.title}" was approved.',
+            notification_type='bazaar_booking_approved',
+            url=reverse('bazaar:my_bookings'),
+        )
+    else:
+        Notification.objects.create(
+            recipient=booking.seller,
+            sender=request.user,
+            title='Bazaar Booking Rejected',
+            message=f'Your booking for bazaar "{booking.bazaar.title}" was rejected.',
+            notification_type='bazaar_booking_rejected',
+            url=reverse('bazaar:my_bookings'),
+        )
 
     if status == 'approved':
         messages.success(request, 'Booking approved')
