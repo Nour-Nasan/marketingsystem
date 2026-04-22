@@ -246,11 +246,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'chat:inbox' %}">
-                        <i class="fas fa-comments"></i>
-                        <span>Messages</span>
+                    <a href="{% url 'chat:inbox' %}" class="w-full justify-between">
+                        <span class="inline-flex items-center gap-3">
+                            <i class="fas fa-comments"></i>
+                            <span>Messages</span>
+                        </span>
                         {% if unread_chat_count > 0 %}
-                            <span class="ml-auto inline-flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-semibold px-2 py-0.5">
+                            <span class="inline-flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-semibold px-2 py-0.5 shrink-0">
                                 {% if unread_chat_count > 99 %}99+{% else %}{{ unread_chat_count }}{% endif %}
                             </span>
                         {% endif %}
