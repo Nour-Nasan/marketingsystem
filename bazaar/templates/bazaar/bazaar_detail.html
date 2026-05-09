@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends "base.html" %}
+{% block content %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ bazaar.title }}</title>
@@ -52,16 +51,7 @@
             transform: translateY(-2px);
         }
     </style>
-</head>
-<body class="bg-gray-50">
-<div class="p-4 lg:p-6 max-w-5xl mx-auto">
-    <div class="top-bar">
-        <div class="font-bold text-lg">Bazaar Details</div>
-        <div class="flex flex-wrap gap-3 justify-end">
-            <a href="{% url 'bazaar:browse_bazaars' %}" class="text-white/90 hover:text-white text-sm font-semibold">Browse</a>
-            <a href="{% url 'users:seller_dashboard' %}" class="text-white/90 hover:text-white text-sm font-semibold">Dashboard</a>
-        </div>
-    </div>
+
 
     {% if messages %}
         <div class="space-y-2 mb-4">
@@ -130,6 +120,4 @@
         </div>
     </div>
 </div>
-</body>
-</html>
-
+{% endblock %}
