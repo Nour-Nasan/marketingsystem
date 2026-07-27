@@ -1,1 +1,2 @@
-.env
+.envstaticfiles/
+db.sqlite3
