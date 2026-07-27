@@ -19,7 +19,7 @@ SECRET_KEY = 'django-insecure-clz=im47_e0pxz4gq4nnybo$3%nicvt&u)+&air(x$e8_m0jmd
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -86,14 +86,15 @@ WSGI_APPLICATION = 'marketingsystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'market_db',
-        'USER': 'root',
-        'PASSWORD':'9999',
-        'HOST' : '127.0.0.1',
-        'PORT' : '3306'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.replit.dev',
+    'https://*.repl.co',
+]
 
 
 # Password validation
