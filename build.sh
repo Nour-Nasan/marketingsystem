@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Render build script — runs once on each deploy before the service starts.
 set -o errexit
 
 pip install -r requirements.txt
